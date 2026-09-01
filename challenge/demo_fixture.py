@@ -46,8 +46,9 @@ def seed_demo_records(store: AppStore, project_id: str, stage_root: Path) -> Age
     request_payload = request.model_dump(mode="json")
     result = {
         "messages": [
-            "The matched-path checks are reliable enough to run the held-out replicate. "
-            "They do not yet establish why future learning differs."
+            "The retained 30-row table passes the 0.02 first-shift matching gate and is ready "
+            "for the bounded second-shift slope comparison. It does not yet establish why "
+            "future learning differs."
         ],
         "artifacts": [descriptor.model_dump(mode="json")],
     }

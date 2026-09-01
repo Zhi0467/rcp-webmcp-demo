@@ -137,19 +137,21 @@ def _write_experiment_result(contract: DemoContract) -> None:
     if not isinstance(attempts, list):
         raise ValueError("RCP Demo fixture Experiment has no attempt ledger.")
     held_out = [
-        item for item in attempts if isinstance(item, dict) and item.get("id") == "attempt/03"
+        item for item in attempts if isinstance(item, dict) and item.get("id") == "attempt/04"
     ]
-    if len(held_out) != 1 or held_out[0].get("status") != "running":
+    if len(held_out) != 1 or held_out[0].get("status") != "planned":
         raise ValueError("RCP Demo held-out replicate is not ready for its fixed completion.")
     held_out[0].update(
         {
             "status": "completed",
             "outcome": (
-                "Across three synthetic seeds, the search-assisted arm recovered its second-shift "
-                "learning slope while the matched value-only arm remained flat."
+                "All 30 rows passed the match gate. Maximum first-shift gaps were 0.01 "
+                "for return and 0.002 for policy KL. Mean second-shift slopes were "
+                "0.178333 for search-assisted and 0.025333 for value-only, a difference "
+                "of 0.153."
             ),
             "failure_reason": None,
-            "finished_at": "2026-08-31T18:00:00Z",
+            "finished_at": "2026-09-01T19:00:00Z",
         }
     )
 
@@ -170,8 +172,9 @@ def _write_experiment_result(contract: DemoContract) -> None:
                             "attempts": attempts,
                             "status": "completed",
                             "current_summary": (
-                                "The fixed held-out replicate completed across three synthetic "
-                                "seeds and produced a scoped learning-curve result."
+                                "The retained 30-row synthetic replicate passed the first-shift "
+                                "match gate. The search-assisted mean second-shift slope was "
+                                "0.178333 versus 0.025333 for value-only."
                             ),
                             "next_action": None,
                         },
@@ -186,9 +189,9 @@ def _write_experiment_result(contract: DemoContract) -> None:
                         "type": "evidence",
                         "title": "Held-out second-shift learning curves",
                         "observation": (
-                            "In the synthetic held-out replicate, the search-assisted arm had a "
-                            "positive second-shift learning slope in all three seeds while the "
-                            "matched value-only arm stayed near zero."
+                            "All 30 retained rows passed the match gate. The search-assisted "
+                            "second-shift slopes were 0.179, 0.172, and 0.184; the value-only "
+                            "slopes were 0.026, 0.025, and 0.025."
                         ),
                         "interpretation": (
                             "The replicate supports a scoped difference in future learning under "
@@ -198,6 +201,10 @@ def _write_experiment_result(contract: DemoContract) -> None:
                         "role": "result",
                         "validity": "qualified",
                         "origin": "internal_run",
+                        "artifact_refs": [
+                            "study/held_out_trajectory.csv",
+                            "study/analyze_held_out.py",
+                        ],
                     }
                 ],
             },
@@ -223,7 +230,9 @@ def _write_experiment_result(contract: DemoContract) -> None:
                         "assessment": {
                             "relevance": "direct",
                             "weight": "moderate",
-                            "scope": "Three synthetic seeds in the held-out matched-path replicate.",
+                            "scope": (
+                                "Three fixed synthetic seeds per arm across five held-out updates."
+                            ),
                             "qualifications": [
                                 "The fixture is synthetic.",
                                 "The replicate does not identify the causal mechanism.",
@@ -274,8 +283,9 @@ def _run_turn(args: argparse.Namespace) -> int:
     )
     answer = {
         "discuss": (
-            "The held-out replicate is ready. The reliability view supports running the bounded "
-            "Experiment next, while the broader plasticity claim remains open."
+            "The retained 30-row table passes the first-shift matching gate. It is ready for the "
+            "bounded second-shift slope comparison, while the broader plasticity claim remains "
+            "open."
         ),
         "experiment": "RCP Demo inspected the fixed held-out replicate and recorded its result.",
         "report": "RCP Demo wrote the fixed synthetic episode report.",
@@ -348,29 +358,29 @@ _EPISODE_REPORT = """<!doctype html>
 <main>
   <div class="eyebrow">Synthetic challenge episode · completed</div>
   <h1>Held-out learning separated after the second shift</h1>
-  <p class="lede">The bounded replicate completed across three fixed synthetic seeds. The
-  search-assisted arm recovered a positive learning slope while the matched value-only arm
-  remained nearly flat.</p>
+  <p class="lede">All 30 retained rows passed the first-shift match gate. Across three fixed
+  synthetic seeds, the search-assisted arm had a mean second-shift slope of 0.178333 versus
+  0.025333 for value-only.</p>
 
   <section class="outcome" aria-labelledby="outcome-title">
     <h2 id="outcome-title">Outcome</h2>
-    <p>The run produced qualified internal Evidence for a scoped difference in future learning.
-    It did not identify the causal mechanism, settle the broader plasticity question, or change
-    the Hypothesis standing.</p>
+    <p>The mean slope difference was 0.153. The run produced qualified internal Evidence for
+    this scoped difference in future learning; it did not identify the causal mechanism, settle
+    the broader plasticity question, or change the Hypothesis standing.</p>
   </section>
 
   <section class="grid" aria-label="Episode summary">
     <article class="card">
       <div class="label">Operational result</div>
-      <p class="metric">1 held-out attempt completed</p>
-      <p>The Experiment attempt ledger and terminal summary were updated through the ordinary
-      validated Patch path.</p>
+      <p class="metric">30 rows · 6 curves</p>
+      <p>Every seed-arm trajectory contained updates 0 through 4, and both matching diagnostics
+      remained below the declared 0.02 tolerance.</p>
     </article>
     <article class="card">
       <div class="label">Scientific standing</div>
-      <p class="metric">Qualified, inconclusive</p>
-      <p>The new Evidence is directly relevant but deliberately narrower than the research
-      Hypothesis it informs.</p>
+      <p class="metric">0.153 slope gap</p>
+      <p><strong>Qualified, inconclusive:</strong> the new Evidence is directly relevant but
+      deliberately narrower than the research Hypothesis it informs.</p>
     </article>
   </section>
 
@@ -409,12 +419,17 @@ _RESULT_ARTIFACT = """<!doctype html>
   .eyebrow { color: #8f3e32; font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
   svg { display: block; width: 100%; height: auto; margin-top: 18px; }
   .axis { stroke: #8f8577; stroke-width: 1; }
-  .search { fill: none; stroke: #9b3e32; stroke-width: 5; }
-  .value { fill: none; stroke: #536b73; stroke-width: 5; }
+  .search { fill: none; stroke: #9b3e32; stroke-width: 3; opacity: .72; }
+  .value { fill: none; stroke: #536b73; stroke-width: 3; opacity: .72; }
   .legend { display: flex; gap: 24px; margin-top: 14px; font-weight: 700; }
   .swatch { display: inline-block; width: 18px; height: 4px; margin: 0 8px 4px 0; }
+  .metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+  .metric { padding: 14px; background: #f5f0e7; }
+  .metric strong { display: block; color: #8f3e32; font: 700 22px/1.2 Georgia, serif; }
+  .metric span { color: #6f6659; font-size: 13px; line-height: 1.4; }
   .finding { margin-top: 24px; padding-left: 18px; border-left: 4px solid #9b3e32; line-height: 1.55; }
   .limit { margin-top: 18px; color: #6f6659; font-size: 14px; line-height: 1.5; }
+  @media (max-width: 620px) { .metrics { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -425,17 +440,27 @@ _RESULT_ARTIFACT = """<!doctype html>
   search-assisted arm while the matched value-only arm remains nearly flat.</p>
   <section class="card" aria-labelledby="chart-title">
     <h2 id="chart-title">Held-out second-shift return</h2>
-    <svg viewBox="0 0 680 330" role="img" aria-label="Search-assisted return rises across training while value-only return stays nearly flat.">
+    <svg viewBox="0 0 680 330" role="img"
+      aria-label="All three search-assisted returns rise faster than all three value-only returns across five updates.">
       <line class="axis" x1="70" y1="275" x2="640" y2="275" />
       <line class="axis" x1="70" y1="35" x2="70" y2="275" />
-      <polyline class="value" points="70,244 180,238 290,240 400,232 510,229 620,225" />
-      <polyline class="search" points="70,246 180,224 290,186 400,142 510,98 620,61" />
-      <text x="340" y="315" text-anchor="middle">Second-shift training steps</text>
+      <polyline class="value" points="70,252 210,246 350,238 490,230 630,224" />
+      <polyline class="value" points="70,255 210,249 350,244 490,235 630,227" />
+      <polyline class="value" points="70,249 210,244 350,235 490,230 630,221" />
+      <polyline class="search" points="70,252 210,218 350,173 490,114 630,52" />
+      <polyline class="search" points="70,255 210,224 350,179 490,122 630,63" />
+      <polyline class="search" points="70,249 210,213 350,165 490,105 630,43" />
+      <text x="350" y="315" text-anchor="middle">Second-shift update (0–4)</text>
       <text x="18" y="160" text-anchor="middle" transform="rotate(-90 18 160)">Return</text>
     </svg>
     <div class="legend">
       <span><i class="swatch" style="background:#9b3e32"></i>Search-assisted</span>
       <span><i class="swatch" style="background:#536b73"></i>Matched value-only</span>
+    </div>
+    <div class="metrics" aria-label="Analysis diagnostics">
+      <div class="metric"><strong>0.01</strong><span>maximum first-shift return gap</span></div>
+      <div class="metric"><strong>0.002</strong><span>maximum first-shift policy-KL gap</span></div>
+      <div class="metric"><strong>0.153</strong><span>mean second-shift slope difference</span></div>
     </div>
   </section>
   <p class="finding"><strong>Scoped result:</strong> the held-out replicate supports a

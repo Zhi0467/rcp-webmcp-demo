@@ -15,6 +15,8 @@ from __future__ import annotations
 
 import json
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -43,9 +45,8 @@ def test_demo_fixture_replays_from_its_patch_log(demo_state: Path) -> None:
     assert state.revision > 0
     assert state.nodes
 
-    # Flags are allowed and currently expected: the fixture keeps a deliberately
-    # mistyped historical `supports` edge to demonstrate endpoint diagnostics. A
-    # *reject* is different: it means replay hit something structurally broken.
+    # Historical flags may remain as append-only admission evidence. A *reject*
+    # is different: it means replay hit something structurally broken.
     rejects = [item for item in state.validation_messages if item.level == "reject"]
     assert rejects == []
 
@@ -70,14 +71,56 @@ def test_demo_fixture_still_offers_the_work_the_scenarios_open_it_for(
     # The challenge journey can discuss and run through the same normal profile
     # without launching a real provider or waiting on external work.
     manifest = load_manifest(demo_state / ".research" / "manifest.toml")
-    assert manifest.agent_profile("node_chat").provider == "rcp-demo"
-    assert manifest.agent_profile("project_chat").provider == "rcp-demo"
+    for surface in (
+        "seed",
+        "refresh",
+        "node_chat",
+        "project_chat",
+        "paper_coach",
+        "orchestrator",
+    ):
+        assert manifest.agent_profile(surface).provider == "rcp-demo"
     decision = state.nodes["dec/match-endpoint-or-training-path"]
     assert decision.status == "decided"
     assert decision.selected_option == "Match the full update trajectory"
+    experiment = state.nodes["exp/two-update-matched-trajectory"]
+    assert experiment.attempts[-1].id == "attempt/04"
+    assert experiment.attempts[-1].status == "planned"
+    assert experiment.current_summary_stale is False
+    assert experiment.next_action_stale is False
+    assert "ev/external-path-match-study" not in state.nodes
     control = derive_experiment_control_state(state, "exp/two-update-matched-trajectory")
     assert control.ready is True
     assert control.reasons == []
+
+
+def test_demo_study_reference_analysis_matches_the_seeded_claims(demo_state: Path) -> None:
+    analysis = subprocess.run(
+        [
+            sys.executable,
+            "study/analyze_held_out.py",
+            "study/held_out_trajectory.csv",
+        ],
+        cwd=demo_state,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    result = json.loads(analysis.stdout)
+
+    assert result["synthetic"] is True
+    assert result["rows"] == 30
+    assert result["matching"] == {
+        "max_first_shift_kl_gap": 0.002,
+        "max_first_shift_return_gap": 0.01,
+        "passed": True,
+        "tolerance": 0.02,
+    }
+    assert result["second_shift_slope"]["mean"] == {
+        "search_assisted": 0.178333,
+        "value_only": 0.025333,
+    }
+    assert result["second_shift_slope"]["search_minus_value"] == 0.153
 
 
 def test_checked_in_graph_json_is_what_the_patch_log_produces(demo_state: Path) -> None:

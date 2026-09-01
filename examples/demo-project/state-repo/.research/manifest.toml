@@ -24,9 +24,9 @@ repository = "crlp-demo-state"
 default_run_truth_scope = ["crlp-demo-state"]
 
 [agent.seed]
-provider = "codex"
-model = ""
-reasoning = "medium"
+provider = "rcp-demo"
+model = "rcp-demo-1"
+reasoning = ""
 run_on = "laptop"
 write_path = "protected"
 
@@ -41,9 +41,9 @@ write_project_files = false
 write_paper = false
 
 [agent.refresh]
-provider = "codex"
-model = ""
-reasoning = "medium"
+provider = "rcp-demo"
+model = "rcp-demo-1"
+reasoning = ""
 run_on = "laptop"
 write_path = "protected"
 
@@ -92,9 +92,9 @@ write_project_files = false
 write_paper = false
 
 [agent.paper_coach]
-provider = "codex"
-model = "gpt-5.6-luna"
-reasoning = "medium"
+provider = "rcp-demo"
+model = "rcp-demo-1"
+reasoning = ""
 run_on = "laptop"
 write_path = "protected"
 

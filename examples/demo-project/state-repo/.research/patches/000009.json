@@ -1,0 +1,79 @@
+{
+  "schema_generation": 2,
+  "revision": 9,
+  "kind": "approval",
+  "author": "human",
+  "producer": "human",
+  "created_at": "2026-09-01T18:56:40.552133Z",
+  "summary": "Recorded why the held-out study matches full first-shift trajectories.",
+  "ops": [
+    {
+      "op": "update_nodes",
+      "nodes": [
+        {
+          "id": "dec/match-endpoint-or-training-path",
+          "changes": {
+            "rationale": "Matching the entire first-shift return and policy-KL trajectories reduces the risk that later learning differences are artifacts of different update histories.",
+            "consequences": [
+              "Treat the first-shift trajectory match as a gate before comparing later learning.",
+              "Keep any held-out result scoped to this synthetic protocol."
+            ]
+          },
+          "base_updated_rev": 8
+        }
+      ]
+    }
+  ],
+  "run_truth_scope": [],
+  "repositories_read": [],
+  "processed_cursors": {},
+  "change_summary": [
+    "Documented the human-selected matching rule used by the held-out replicate."
+  ],
+  "source_operation_id": null,
+  "source_effect_id": null,
+  "source_effect_sha256": null,
+  "human_action": null,
+  "agent_action": null,
+  "admission": "accepted",
+  "admission_messages": [],
+  "experiment_control_node_id": null,
+  "experiment_decision_bundle": [],
+  "project_identity": null,
+  "project_home_transfer": null,
+  "authorized_by": null,
+  "profile": null,
+  "task_id": null,
+  "episode_id": null,
+  "branch_merge": null,
+  "transition": {
+    "schema_generation": 1,
+    "transition_id": "51b731d0e3f0ae82c99ca6bb176415509ce53aa9026101275903925c8319771b",
+    "pre_head": {
+      "target": {
+        "kind": "main",
+        "branch_id": null
+      },
+      "revision": 8,
+      "transition_id": "d07941c94b513d29295080f9127733174d6620b9716a2116ed0ab382b3a8f20d"
+    },
+    "ruleset_tag": "rcp.lifecycle.v2",
+    "initiating_groups": [
+      {
+        "group_id": "group-1",
+        "operation_indexes": [
+          0
+        ],
+        "summary": "Recorded why the held-out study matches full first-shift trajectories.",
+        "change_summary": [
+          "Documented the human-selected matching rule used by the held-out replicate."
+        ],
+        "human_action": null,
+        "agent_action": null
+      }
+    ],
+    "generated_actions": [],
+    "lifecycle_events": [],
+    "expanded_ops_sha256": "c3bcab4c532db695ce893c0e0dc4a82d0b30e2061bcd4d76c4517af2f8c26dd4"
+  }
+}

@@ -55,16 +55,6 @@
       "source": "ev/endpoint-match-is-insufficient",
       "target": "hyp/search-restores-future-learning"
     },
-    "ev/external-path-match-study::supports::blk/missing-optimizer-state": {
-      "assessment": null,
-      "created_rev": 5,
-      "explanation": "This deliberately provisional edge demonstrates a visible endpoint-type flag.",
-      "id": "ev/external-path-match-study::supports::blk/missing-optimizer-state",
-      "layer": "seam",
-      "relation": "supports",
-      "source": "ev/external-path-match-study",
-      "target": "blk/missing-optimizer-state"
-    },
     "exp/two-update-matched-trajectory::governed_by::dec/match-endpoint-or-training-path": {
       "assessment": null,
       "created_rev": 1,
@@ -130,7 +120,7 @@
       "where_defined": "experiments/two_update.py"
     }
   },
-  "last_refresh_at": "2026-07-30T08:00:00Z",
+  "last_refresh_at": "2026-09-01T18:58:17.765496Z",
   "nodes": {
     "blk/missing-optimizer-state": {
       "blocker_type": "implementation",
@@ -150,7 +140,8 @@
     },
     "dec/match-endpoint-or-training-path": {
       "consequences": [
-        "Determines whether retention and future plasticity can be separated"
+        "Treat the first-shift trajectory match as a gate before comparing later learning.",
+        "Keep any held-out result scoped to this synthetic protocol."
       ],
       "created_rev": 1,
       "extension_fields": {},
@@ -161,54 +152,35 @@
         "Match the full update trajectory"
       ],
       "question": "Should the first controlled study match endpoint performance or the full training path?",
-      "rationale": null,
+      "rationale": "Matching the entire first-shift return and policy-KL trajectories reduces the risk that later learning differences are artifacts of different update histories.",
       "selected_option": "Match the full update trajectory",
       "source_refs": [],
       "standing": "asserted",
       "status": "decided",
       "title": "Choose the causal matching target",
       "type": "decision",
-      "updated_rev": 8
+      "updated_rev": 9
     },
     "ev/endpoint-match-is-insufficient": {
       "artifact_refs": [
-        "runs/two-update-smoke/metrics.json"
+        "study/held_out_trajectory.csv",
+        "study/analyze_held_out.py"
       ],
       "created_rev": 1,
       "extension_fields": {},
       "extension_type": null,
       "id": "ev/endpoint-match-is-insufficient",
-      "interpretation": "Endpoint equality alone does not isolate the mechanism responsible for later learning.",
+      "interpretation": "The retained table is suitable for the predeclared second-shift slope comparison, while remaining synthetic and non-causal.",
       "legacy_strength": "preliminary",
-      "observation": "Two arms reached similar endpoint return while their update-wise KL and gradient norms diverged.",
-      "origin": "unknown",
-      "role": "result",
+      "observation": "Across five updates, the maximum arm-level gap is 0.01 for first-shift return and 0.002 for first-shift policy KL, both below the 0.02 tolerance.",
+      "origin": "analytic",
+      "role": "diagnostic",
       "source_refs": [],
       "standing": "asserted",
-      "title": "Endpoint matching leaves different learning paths",
+      "title": "Held-out first-shift paths satisfy the match gate",
       "type": "evidence",
-      "updated_rev": 1,
+      "updated_rev": 10,
       "validity": "valid"
-    },
-    "ev/external-path-match-study": {
-      "artifact_refs": [
-        "papers/matched-path-comparison"
-      ],
-      "created_rev": 5,
-      "extension_fields": {},
-      "extension_type": null,
-      "id": "ev/external-path-match-study",
-      "interpretation": "Endpoint matching alone is not enough to attribute future plasticity to replanning.",
-      "legacy_strength": "supporting",
-      "observation": "A published matched-path comparison found that endpoint agreement did not imply the same later learning curve.",
-      "origin": "external_publication",
-      "role": "result",
-      "source_refs": [],
-      "standing": "asserted",
-      "title": "External path-matching study",
-      "type": "evidence",
-      "updated_rev": 5,
-      "validity": "qualified"
     },
     "exp/two-update-matched-trajectory": {
       "attempts": [
@@ -253,8 +225,8 @@
           "configuration": "128 episodes",
           "debug": null,
           "decision_bundle": [],
-          "failure_reason": null,
-          "finished_at": null,
+          "failure_reason": "This historical synthetic job retained no measurements, so it cannot support a result.",
+          "finished_at": "2026-08-31T17:00:00Z",
           "id": "attempt/03",
           "job_refs": [
             "9136024"
@@ -264,38 +236,63 @@
           "sequence": 3,
           "source_refs": [],
           "started_at": null,
-          "status": "running"
+          "status": "failed"
+        },
+        {
+          "attempt_kind": "external_run",
+          "configuration": "study/held_out_trajectory.csv; three fixed synthetic seeds per arm; five updates; 0.02 first-shift matching tolerance",
+          "debug": null,
+          "decision_bundle": [
+            {
+              "decision_id": "dec/match-endpoint-or-training-path",
+              "decision_revision": 9,
+              "selected_option": "Match the full update trajectory"
+            }
+          ],
+          "failure_reason": null,
+          "finished_at": null,
+          "id": "attempt/04",
+          "job_refs": [],
+          "outcome": null,
+          "purpose": "Analyze retained held-out trajectories",
+          "sequence": 4,
+          "source_refs": [],
+          "started_at": null,
+          "status": "planned"
         }
       ],
       "completion_criteria": [
-        "Three seeds per arm",
-        "Matched first-shift endpoint KL"
+        "Exactly 30 rows covering three seeds, two arms, and updates 0 through 4.",
+        "Arm-level first-shift return and policy-KL gaps are at most 0.02 at every update.",
+        "Report a least-squares second-shift slope for every seed and each arm mean.",
+        "Create one visual result artifact with matching diagnostics and all six curves."
       ],
       "created_rev": 1,
-      "current_summary": "The repaired smoke is running; the first two attempts exposed unrelated data and checkpoint failures.",
-      "current_summary_stale": true,
-      "design": "Train value-only and search-assisted arms through one shift, then measure learning on an unseen second shift.",
+      "current_summary": "The repository now retains a complete 30-row synthetic held-out table and a standard-library reference analysis. Earlier external-job entries remain historical only; none supports a scientific result.",
+      "current_summary_stale": false,
+      "design": "Read study/held_out_trajectory.csv, validate all six seed-arm trajectories, apply the 0.02 first-shift matching tolerance at every update, then compare per-seed least-squares slopes of second-shift return.",
       "expected_outcomes": [
-        "Search changes the second-shift learning curve",
-        "Endpoint-only gains disappear under path matching"
+        "The first-shift return and policy-KL paths pass the declared match gate.",
+        "The search-assisted arm has a larger second-shift learning slope."
       ],
       "extension_fields": {},
       "extension_type": null,
       "id": "exp/two-update-matched-trajectory",
       "interpretation_rules": [
-        "Current performance is not future plasticity",
-        "A single checkpoint is not a learning curve"
+        "The fixture is synthetic and cannot establish external generality.",
+        "A scoped slope difference does not identify the causal mechanism.",
+        "Do not change the broader Hypothesis standing from this replicate alone."
       ],
       "invocation_ceiling": 5,
-      "next_action": "Inspect the first complete second-shift learning curve.",
-      "next_action_stale": true,
-      "objective": "Measure future learning after matching the first update's compute and endpoint behavior.",
+      "next_action": "Run python3 study/analyze_held_out.py study/held_out_trajectory.csv, close attempt/04 with the exact scoped result, and save a visual artifact without changing the broader Hypothesis standing.",
+      "next_action_stale": false,
+      "objective": "Compare second-shift learning after verifying that the two arms follow matched return and policy-KL paths during the first shift.",
       "source_refs": [],
       "standing": "asserted",
-      "status": "running",
-      "title": "Two-update matched trajectory",
+      "status": "analyzing",
+      "title": "Held-out matched-trajectory replicate",
       "type": "experiment",
-      "updated_rev": 8
+      "updated_rev": 10
     },
     "hyp/search-restores-future-learning": {
       "created_rev": 1,
@@ -427,7 +424,7 @@
   },
   "replay_failure": null,
   "replay_status": "complete",
-  "revision": 8,
+  "revision": 10,
   "validation_messages": [
     {
       "cause_chain": [],

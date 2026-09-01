@@ -1,0 +1,279 @@
+{
+  "schema_generation": 2,
+  "revision": 10,
+  "kind": "refresh",
+  "author": "agent",
+  "producer": "agent",
+  "created_at": "2026-09-01T18:58:17.765496Z",
+  "summary": "Grounded the held-out Experiment in the retained synthetic study.",
+  "ops": [
+    {
+      "op": "update_nodes",
+      "nodes": [
+        {
+          "id": "exp/two-update-matched-trajectory",
+          "changes": {
+            "title": "Held-out matched-trajectory replicate",
+            "objective": "Compare second-shift learning after verifying that the two arms follow matched return and policy-KL paths during the first shift.",
+            "design": "Read study/held_out_trajectory.csv, validate all six seed-arm trajectories, apply the 0.02 first-shift matching tolerance at every update, then compare per-seed least-squares slopes of second-shift return.",
+            "expected_outcomes": [
+              "The first-shift return and policy-KL paths pass the declared match gate.",
+              "The search-assisted arm has a larger second-shift learning slope."
+            ],
+            "interpretation_rules": [
+              "The fixture is synthetic and cannot establish external generality.",
+              "A scoped slope difference does not identify the causal mechanism.",
+              "Do not change the broader Hypothesis standing from this replicate alone."
+            ],
+            "completion_criteria": [
+              "Exactly 30 rows covering three seeds, two arms, and updates 0 through 4.",
+              "Arm-level first-shift return and policy-KL gaps are at most 0.02 at every update.",
+              "Report a least-squares second-shift slope for every seed and each arm mean.",
+              "Create one visual result artifact with matching diagnostics and all six curves."
+            ],
+            "status": "analyzing",
+            "attempts": [
+              {
+                "id": "attempt/01",
+                "sequence": 1,
+                "purpose": "Configuration smoke",
+                "attempt_kind": "external_run",
+                "decision_bundle": [],
+                "debug": null,
+                "configuration": "8 episodes",
+                "status": "failed",
+                "job_refs": [
+                  "9134421"
+                ],
+                "source_refs": [],
+                "outcome": null,
+                "failure_reason": "Dataset path resolved to a stale mount",
+                "started_at": null,
+                "finished_at": null
+              },
+              {
+                "id": "attempt/02",
+                "sequence": 2,
+                "purpose": "Checkpoint resume smoke",
+                "attempt_kind": "external_run",
+                "decision_bundle": [],
+                "debug": null,
+                "configuration": "32 episodes",
+                "status": "failed",
+                "job_refs": [
+                  "9135198"
+                ],
+                "source_refs": [],
+                "outcome": null,
+                "failure_reason": "Optimizer state was absent",
+                "started_at": null,
+                "finished_at": null
+              },
+              {
+                "id": "attempt/03",
+                "sequence": 3,
+                "purpose": "Repaired causal smoke",
+                "attempt_kind": "external_run",
+                "decision_bundle": [],
+                "debug": null,
+                "configuration": "128 episodes",
+                "status": "failed",
+                "job_refs": [
+                  "9136024"
+                ],
+                "source_refs": [],
+                "outcome": null,
+                "failure_reason": "This historical synthetic job retained no measurements, so it cannot support a result.",
+                "started_at": null,
+                "finished_at": "2026-08-31T17:00:00Z"
+              },
+              {
+                "id": "attempt/04",
+                "sequence": 4,
+                "purpose": "Analyze retained held-out trajectories",
+                "attempt_kind": "external_run",
+                "decision_bundle": [
+                  {
+                    "decision_id": "dec/match-endpoint-or-training-path",
+                    "decision_revision": 9,
+                    "selected_option": "Match the full update trajectory"
+                  }
+                ],
+                "debug": null,
+                "configuration": "study/held_out_trajectory.csv; three fixed synthetic seeds per arm; five updates; 0.02 first-shift matching tolerance",
+                "status": "planned",
+                "job_refs": [],
+                "source_refs": [],
+                "outcome": null,
+                "failure_reason": null,
+                "started_at": null,
+                "finished_at": null
+              }
+            ],
+            "current_summary": "The repository now retains a complete 30-row synthetic held-out table and a standard-library reference analysis. Earlier external-job entries remain historical only; none supports a scientific result.",
+            "next_action": "Run python3 study/analyze_held_out.py study/held_out_trajectory.csv, close attempt/04 with the exact scoped result, and save a visual artifact without changing the broader Hypothesis standing."
+          }
+        }
+      ]
+    },
+    {
+      "op": "update_nodes",
+      "nodes": [
+        {
+          "id": "ev/endpoint-match-is-insufficient",
+          "changes": {
+            "title": "Held-out first-shift paths satisfy the match gate",
+            "observation": "Across five updates, the maximum arm-level gap is 0.01 for first-shift return and 0.002 for first-shift policy KL, both below the 0.02 tolerance.",
+            "interpretation": "The retained table is suitable for the predeclared second-shift slope comparison, while remaining synthetic and non-causal.",
+            "role": "diagnostic",
+            "validity": "valid",
+            "origin": "analytic",
+            "artifact_refs": [
+              "study/held_out_trajectory.csv",
+              "study/analyze_held_out.py"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "op": "remove_edges",
+      "edge_ids": [
+        "ev/external-path-match-study::supports::blk/missing-optimizer-state"
+      ]
+    },
+    {
+      "op": "remove_nodes",
+      "node_ids": [
+        "ev/external-path-match-study"
+      ]
+    },
+    {
+      "op": "update_nodes",
+      "nodes": [
+        {
+          "id": "exp/two-update-matched-trajectory",
+          "changes": {
+            "current_summary_stale": false,
+            "next_action_stale": false
+          }
+        }
+      ]
+    }
+  ],
+  "run_truth_scope": [
+    "crlp-demo-state"
+  ],
+  "repositories_read": [
+    "crlp-demo-state"
+  ],
+  "processed_cursors": {},
+  "change_summary": [
+    "Closed the unretained historical run without claiming a result.",
+    "Added one planned analysis attempt over the checked-in held-out table.",
+    "Replaced placeholder Evidence with diagnostics computed from retained data.",
+    "Removed the fabricated external source and its invalid relation."
+  ],
+  "source_operation_id": null,
+  "source_effect_id": null,
+  "source_effect_sha256": null,
+  "human_action": null,
+  "agent_action": null,
+  "admission": "accepted",
+  "admission_messages": [],
+  "experiment_control_node_id": null,
+  "experiment_decision_bundle": [],
+  "project_identity": null,
+  "project_home_transfer": null,
+  "authorized_by": null,
+  "profile": null,
+  "task_id": null,
+  "episode_id": null,
+  "branch_merge": null,
+  "transition": {
+    "schema_generation": 1,
+    "transition_id": "6671143bdac96d8e03cb9f6e0b4ef6825c3f5904087a5503378fb8257242ea1e",
+    "pre_head": {
+      "target": {
+        "kind": "main",
+        "branch_id": null
+      },
+      "revision": 9,
+      "transition_id": "51b731d0e3f0ae82c99ca6bb176415509ce53aa9026101275903925c8319771b"
+    },
+    "ruleset_tag": "rcp.lifecycle.v2",
+    "initiating_groups": [
+      {
+        "group_id": "group-1",
+        "operation_indexes": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "summary": "Grounded the held-out Experiment in the retained synthetic study.",
+        "change_summary": [
+          "Closed the unretained historical run without claiming a result.",
+          "Added one planned analysis attempt over the checked-in held-out table.",
+          "Replaced placeholder Evidence with diagnostics computed from retained data.",
+          "Removed the fabricated external source and its invalid relation."
+        ],
+        "human_action": null,
+        "agent_action": null
+      }
+    ],
+    "generated_actions": [
+      {
+        "operation_index": 4,
+        "rule_id": "experiment.guidance-validity.v1",
+        "cause": {
+          "kind": "action",
+          "action_index": 0,
+          "event_id": null
+        }
+      }
+    ],
+    "lifecycle_events": [
+      {
+        "event_id": "172beca0e4bac74b223a8e4f749f8feb874038c6899aa3aa2720a71069f57f10",
+        "event_type": "node_status_changed",
+        "cause": {
+          "kind": "action",
+          "action_index": 0,
+          "event_id": null
+        },
+        "node_id": "exp/two-update-matched-trajectory",
+        "field": "status",
+        "before": "running",
+        "after": "analyzing"
+      },
+      {
+        "event_id": "ef162fd56d4afc9762d678e93dce7ec984cd578d94c1c65e674a6bbb5edbc254",
+        "event_type": "guidance_refreshed",
+        "cause": {
+          "kind": "action",
+          "action_index": 4,
+          "event_id": null
+        },
+        "node_id": "exp/two-update-matched-trajectory",
+        "field": "current_summary_stale",
+        "before": true,
+        "after": false
+      },
+      {
+        "event_id": "cd05177b01da5b26124388ec6fd2c3906558d69fb153a974a711242fcf3b8914",
+        "event_type": "guidance_refreshed",
+        "cause": {
+          "kind": "action",
+          "action_index": 4,
+          "event_id": null
+        },
+        "node_id": "exp/two-update-matched-trajectory",
+        "field": "next_action_stale",
+        "before": true,
+        "after": false
+      }
+    ],
+    "expanded_ops_sha256": "2125ad093d7fe773deff1430bb76f2b8c9c672b68ccbb25264e150e2ee38001a"
+  }
+}

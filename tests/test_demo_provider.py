@@ -269,9 +269,18 @@ def test_demo_experiment_writes_one_valid_scoped_terminal_result(tmp_path: Path)
         "graph": [],
     }
     artifact = artifacts / "held-out-plasticity-replicate.html"
-    assert "Future learning separates" in artifact.read_text(encoding="utf-8")
+    artifact_html = artifact.read_text(encoding="utf-8")
+    assert "Future learning separates" in artifact_html
+    assert "0.153" in artifact_html
+    assert artifact_html.count('<polyline class="search"') == 3
+    assert artifact_html.count('<polyline class="value"') == 3
     patch = json.loads(patch_path.read_text(encoding="utf-8"))
-    assert patch["ops"][0]["nodes"][0]["changes"]["status"] == "completed"
+    experiment_changes = patch["ops"][0]["nodes"][0]["changes"]
+    assert experiment_changes["status"] == "completed"
+    completed_attempt = experiment_changes["attempts"][-1]
+    assert completed_attempt["id"] == "attempt/04"
+    assert completed_attempt["status"] == "completed"
+    assert "difference of 0.153" in completed_attempt["outcome"]
     assert patch["ops"][2]["edges"][1]["relation"] == "inconclusive"
     bundle = [
         ExperimentDecisionPin(
