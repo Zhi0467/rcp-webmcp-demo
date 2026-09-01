@@ -542,6 +542,33 @@ test("Project Settings opens the move route only for a personal project", () => 
   assert.doesNotMatch(team, /Move to team space/);
 });
 
+test("Project Settings visibly locks provider configuration in the public demo", () => {
+  const html = renderToStaticMarkup(
+    React.createElement(ProjectSettings, {
+      apiBase: "/api/projects/project",
+      project: settingsProject(),
+      identity: null,
+      onLeftProject() {},
+      usage: null,
+      onRefreshUsage: async () => {},
+      cacheClearDisabled: false,
+      writesDisabled: true,
+      lockedReason: "Project and provider configuration is locked in the public demo.",
+      onSaved() {},
+      onCacheMetricsChange() {},
+      onRefreshReadiness: async () => {},
+      showDisplaySettings: false,
+      spaceKind: "personal",
+      textScale: 100,
+      onTextScaleChange() {},
+    }),
+  );
+
+  assert.match(html, /<h2>Public demo<\/h2>/);
+  assert.match(html, /Project and provider configuration is locked in the public demo\./);
+  assert.match(html, /<span>Provider<\/span><select disabled="">/);
+});
+
 test("copyable server argv preserves exact token boundaries", () => {
   assert.equal(
     formatCommandArgv(["/usr/local/bin/rcp", "server", "path with spaces", "a'b"]),

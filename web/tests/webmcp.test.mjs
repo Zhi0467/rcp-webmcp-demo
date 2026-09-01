@@ -13,6 +13,7 @@ const server = await createServer({
 
 const {
   WEBMCP_RESULT_MAX_CHARS,
+  createWebMcpToolRegistry,
   currentWebMcpContext,
   inspectProjectConversation,
   inspectProjectExperiment,
@@ -427,6 +428,65 @@ test("one controller owns every registration and abort removes them together", (
   assert.equal(registration.controller.signal.aborted, true);
   assert.deepEqual([...registered.keys()], []);
   registration.dispose();
+});
+
+test("live tool updates do not abort an in-flight WebMCP call", async () => {
+  const registered = new Map();
+  const signals = new Map();
+  const context = {
+    registerTool(tool, options) {
+      registered.set(tool.name, tool);
+      signals.set(tool.name, options.signal);
+      options.signal.addEventListener("abort", () => registered.delete(tool.name), { once: true });
+    },
+  };
+  let finish;
+  const pendingResult = new Promise((resolve) => {
+    finish = resolve;
+  });
+  const first = {
+    ...definition("one"),
+    execute: () => pendingResult,
+  };
+  const registry = createWebMcpToolRegistry([definition("one")], context);
+  const registeredProxy = registered.get("one");
+  registry.update([first]);
+  assert.strictEqual(registered.get("one"), registeredProxy);
+  assert.equal(signals.get("one").aborted, false);
+  const call = registeredProxy.execute({});
+
+  registry.update([definition("two")]);
+  assert.equal(signals.get("one").aborted, false);
+  assert.ok(registered.has("two"));
+  assert.throws(() => registeredProxy.execute({}), /is not currently available/);
+  finish(webMcpTextResult({ accepted: true }));
+  assert.deepEqual(
+    await call.then((result) => {
+      assert.equal(signals.get("one").aborted, false);
+      return result;
+    }),
+    webMcpTextResult({ accepted: true }),
+  );
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.equal(signals.get("one").aborted, true);
+  assert.equal(registered.has("one"), false);
+
+  registry.update([
+    {
+      ...definition("one"),
+      execute: () => webMcpTextResult({ version: 2 }),
+    },
+    definition("two"),
+  ]);
+  const replacementProxy = registered.get("one");
+  assert.notStrictEqual(replacementProxy, registeredProxy);
+  assert.deepEqual(replacementProxy.execute({}), webMcpTextResult({ version: 2 }));
+  assert.ok(registered.has("two"));
+
+  registry.dispose();
+  assert.equal(signals.get("one").aborted, true);
+  assert.equal(signals.get("two").aborted, true);
+  assert.deepEqual([...registered.keys()], []);
 });
 
 test("registration promises consume expected aborts and report other failures", () => {

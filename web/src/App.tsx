@@ -196,6 +196,7 @@ import {
 } from "./textScale";
 import { NOTICE_TIMEOUT_MS } from "./uiConstants";
 import {
+  createWebMcpToolRegistry,
   projectArtifactToolDefinitions,
   projectConversationSendToolDefinitions,
   projectConversationToolDefinitions,
@@ -203,7 +204,7 @@ import {
   projectExperimentToolDefinitions,
   projectIndexToolDefinitions,
   projectReadToolDefinitions,
-  registerWebMcpTools,
+  type WebMcpToolRegistry,
 } from "./webmcp";
 
 export { revisionSummariesUrl } from "./hooks/useProjectHistory";
@@ -278,6 +279,12 @@ const navItems: Array<{ view: AppView; label: string; icon: React.ReactNode }> =
   { view: "settings", label: "Settings", icon: <Settings2 size={14} /> },
   { view: "chats", label: "Chats", icon: <MessageCircle size={14} /> },
 ];
+
+export function publicDemoConfigurationLocked(
+  root: Pick<Document, "querySelector"> | null = typeof document === "undefined" ? null : document,
+): boolean {
+  return root !== null && root.querySelector('[data-rcp-public-demo="true"]') !== null;
+}
 
 export async function loadCanonicalRevision(
   fetchJson: <T>(path: string) => Promise<T>,
@@ -635,6 +642,7 @@ export function persistProjectHumanDraft(
 
 export default function App() {
   const desktop = useMemo(() => isDesktopRuntime(), []);
+  const publicDemo = useMemo(() => publicDemoConfigurationLocked(), []);
   const [initialRoute] = useState(() => {
     const navigation = window.performance.getEntriesByType("navigation")[0] as
       PerformanceNavigationTiming | undefined;
@@ -2120,10 +2128,38 @@ export default function App() {
     watchers,
     webMcpExperimentStart,
   ]);
+  const webMcpSurfaceKey =
+    project?.id === projectId
+      ? `project:${project.id}`
+      : !projectId && !setupOpen && !loading
+        ? "project-index"
+        : null;
+  const webMcpRegistryRef = useRef<{
+    surfaceKey: string;
+    registry: WebMcpToolRegistry;
+  } | null>(null);
   useEffect(() => {
-    const registration = registerWebMcpTools(webMcpTools);
-    return () => registration?.dispose();
-  }, [webMcpTools]);
+    const current = webMcpRegistryRef.current;
+    if (!webMcpSurfaceKey || webMcpTools.length === 0) {
+      current?.registry.dispose();
+      webMcpRegistryRef.current = null;
+      return;
+    }
+    if (current?.surfaceKey === webMcpSurfaceKey) {
+      current.registry.update(webMcpTools);
+      return;
+    }
+    current?.registry.dispose();
+    const registry = createWebMcpToolRegistry(webMcpTools);
+    webMcpRegistryRef.current = registry ? { surfaceKey: webMcpSurfaceKey, registry } : null;
+  }, [webMcpSurfaceKey, webMcpTools]);
+  useEffect(
+    () => () => {
+      webMcpRegistryRef.current?.registry.dispose();
+      webMcpRegistryRef.current = null;
+    },
+    [],
+  );
   useEffect(() => {
     if (selectedExperimentChatId && floatingChat?.chatId === selectedExperimentChatId) {
       setFloatingChat(null);
@@ -3944,7 +3980,12 @@ export default function App() {
               usage={usage}
               onRefreshUsage={refreshUsage}
               cacheClearDisabled={Boolean(activeTask)}
-              writesDisabled={mutationsDisabled}
+              writesDisabled={mutationsDisabled || publicDemo}
+              lockedReason={
+                publicDemo
+                  ? "Project and provider configuration is locked in the public demo."
+                  : undefined
+              }
               showDisplaySettings={desktop}
               spaceKind={verifiedHealth?.space_kind ?? "personal"}
               textScale={textScale}

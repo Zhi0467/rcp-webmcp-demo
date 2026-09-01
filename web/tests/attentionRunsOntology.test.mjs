@@ -18,6 +18,7 @@ const { AttentionOverview, ExecutionView } = await server.ssrLoadModule(
 const {
   decisionsAwaitingChoice,
   humanAttentionBlockers,
+  publicDemoConfigurationLocked,
   shouldShowCoverageBoundaryWarning,
   taskRetryRequestBody,
 } = await server.ssrLoadModule("/src/App.tsx");
@@ -26,6 +27,18 @@ const { ProjectSettings } = await server.ssrLoadModule("/src/views/ProjectSettin
 const { decodeGraphAttentionProjection } = await server.ssrLoadModule("/src/types.ts");
 
 after(() => server.close());
+
+test("the public-demo marker locks challenge configuration only on the injected page", () => {
+  assert.equal(publicDemoConfigurationLocked(null), false);
+  assert.equal(
+    publicDemoConfigurationLocked({
+      querySelector(selector) {
+        return selector === '[data-rcp-public-demo="true"]' ? {} : null;
+      },
+    }),
+    true,
+  );
+});
 
 test("Experiment provider-switch retry overrides never submit run_on", () => {
   const task = {

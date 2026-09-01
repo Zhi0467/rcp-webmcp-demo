@@ -234,11 +234,14 @@ def test_start_over_control_is_injected_only_into_the_top_level_page(
 ) -> None:
     app, _registry, _processes = _gateway(tmp_path, fixture_root, upstream)
     with TestClient(app) as client:
-        assert "Start over demo" in client.get("/").text
+        top_level = client.get("/").text
+        assert "Start over demo" in top_level
+        assert 'data-rcp-public-demo="true"' in top_level
         artifact = client.get("/artifact")
 
         assert artifact.status_code == 200
         assert "Start over demo" not in artifact.text
+        assert 'data-rcp-public-demo="true"' not in artifact.text
 
 
 def test_two_browsers_receive_different_copies_and_refresh_keeps_progress(

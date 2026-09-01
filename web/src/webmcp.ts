@@ -62,6 +62,11 @@ export type WebMcpRegistration = {
   dispose: () => void;
 };
 
+export type WebMcpToolRegistry = {
+  update: (definitions: WebMcpToolDefinition[]) => void;
+  dispose: () => void;
+};
+
 export const WEBMCP_RESULT_MAX_CHARS = 1_500;
 const WEBMCP_NODE_RESULT_MAX_CHARS = 12_000;
 const WEBMCP_ARTIFACT_RESULT_MAX_CHARS = 8_000;
@@ -127,6 +132,116 @@ export function registerWebMcpTools(
   return {
     controller,
     dispose: () => controller.abort(),
+  };
+}
+
+export function createWebMcpToolRegistry(
+  definitions: WebMcpToolDefinition[],
+  context: WebMcpModelContext | null = currentWebMcpContext(),
+): WebMcpToolRegistry | null {
+  if (!context || definitions.length === 0) return null;
+  const current = new Map<string, WebMcpToolDefinition>();
+  const registrations = new Map<
+    string,
+    {
+      registration: WebMcpRegistration;
+      activeCalls: number;
+      retired: boolean;
+      retireTimer: ReturnType<typeof setTimeout> | null;
+    }
+  >();
+  let disposed = false;
+
+  const finishCall = (name: string): void => {
+    const entry = registrations.get(name);
+    if (!entry) return;
+    entry.activeCalls -= 1;
+    if (!entry.retired || entry.activeCalls !== 0 || entry.retireTimer !== null) return;
+    entry.retireTimer = setTimeout(() => {
+      entry.retireTimer = null;
+      if (!entry.retired || entry.activeCalls !== 0) return;
+      entry.registration.dispose();
+      registrations.delete(name);
+    }, 0);
+  };
+
+  const executeCurrent = (
+    name: string,
+    input: Record<string, unknown>,
+  ): WebMcpToolResult | Promise<WebMcpToolResult> => {
+    const latest = current.get(name);
+    const entry = registrations.get(name);
+    if (!latest || !entry || entry.retired) {
+      throw new Error(`WebMCP tool ${name} is not currently available.`);
+    }
+    entry.activeCalls += 1;
+    try {
+      const result = latest.execute(input);
+      if (result && typeof (result as Promise<WebMcpToolResult>).then === "function") {
+        return Promise.resolve(result).finally(() => finishCall(name));
+      }
+      finishCall(name);
+      return result;
+    } catch (error) {
+      finishCall(name);
+      throw error;
+    }
+  };
+
+  const update = (nextDefinitions: WebMcpToolDefinition[]): void => {
+    if (disposed) throw new Error("Cannot update a disposed WebMCP tool registry.");
+    const nextNames = new Set(nextDefinitions.map((definition) => definition.name));
+    for (const name of current.keys()) {
+      if (nextNames.has(name)) continue;
+      current.delete(name);
+      const entry = registrations.get(name);
+      if (!entry) continue;
+      entry.retired = true;
+      if (entry.activeCalls === 0) {
+        entry.registration.dispose();
+        registrations.delete(name);
+      }
+    }
+    for (const definition of nextDefinitions) {
+      current.set(definition.name, definition);
+      const existing = registrations.get(definition.name);
+      if (existing) {
+        existing.retired = false;
+        if (existing.retireTimer !== null) {
+          clearTimeout(existing.retireTimer);
+          existing.retireTimer = null;
+        }
+        continue;
+      }
+      const proxy: WebMcpToolDefinition = {
+        ...definition,
+        execute: (input) => executeCurrent(definition.name, input),
+      };
+      const registration = registerWebMcpTools([proxy], context);
+      if (registration) {
+        registrations.set(definition.name, {
+          registration,
+          activeCalls: 0,
+          retired: false,
+          retireTimer: null,
+        });
+      }
+    }
+  };
+
+  update(definitions);
+  return {
+    update,
+    dispose: () => {
+      if (disposed) return;
+      disposed = true;
+      registrations.forEach((entry) => {
+        if (entry.retireTimer !== null) clearTimeout(entry.retireTimer);
+        entry.registration.dispose();
+      });
+      registrations.clear();
+      current.clear();
+    },
   };
 }
 

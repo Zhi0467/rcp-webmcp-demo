@@ -814,7 +814,8 @@ def _positive_env_int(name: str, default: int) -> int:
 
 
 _START_OVER_CONTROL = f"""
-<a href="{_START_OVER_PATH}" aria-label="Start the synthetic demo over"
+<a href="{_START_OVER_PATH}" data-rcp-public-demo="true"
+aria-label="Start the synthetic demo over"
 style="position:fixed;right:18px;bottom:18px;z-index:2147483647;padding:9px 13px;border:1px solid
 #8f8170;border-radius:9px;background:#fffaf2;color:#342e27;font:700 13px/1.2 system-ui,sans-serif;
 text-decoration:none;box-shadow:0 4px 18px #332a1c22">Start over demo</a>

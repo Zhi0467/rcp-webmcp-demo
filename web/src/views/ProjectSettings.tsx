@@ -59,6 +59,7 @@ interface Props {
   onRefreshUsage: () => Promise<void>;
   cacheClearDisabled: boolean;
   writesDisabled?: boolean;
+  lockedReason?: string;
   onSaved: (project: ProjectSnapshot, preserveReadiness?: boolean) => void;
   onCacheMetricsChange: (metrics: ProjectCacheMetrics) => void;
   onRefreshReadiness: () => Promise<void>;
@@ -157,6 +158,7 @@ export function ProjectSettings({
   onRefreshUsage,
   cacheClearDisabled,
   writesDisabled = false,
+  lockedReason,
   onSaved,
   onCacheMetricsChange,
   onRefreshReadiness,
@@ -457,6 +459,18 @@ export function ProjectSettings({
     <section className="settings-page">
       {spaceKind === "team" ? <ServerSettings /> : null}
       <AgentUsageWidgets usage={usage} providers={project.providers} />
+
+      {lockedReason ? (
+        <section className="settings-section" role="note">
+          <header>
+            <span>
+              <TriangleAlert size={16} />
+            </span>
+            <h2>Public demo</h2>
+          </header>
+          <p>{lockedReason}</p>
+        </section>
+      ) : null}
 
       {showDisplaySettings && (
         <section className="settings-section display-settings">
