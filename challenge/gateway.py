@@ -52,6 +52,8 @@ from challenge.gateway_state import (
     SessionBinding,
 )
 from rcp.api import create_app
+from rcp.config import AGENT_EXECUTION_PROFILES
+from rcp.service import AgentProfileSettings, ProjectSettingsRequest
 
 _LOG = logging.getLogger("rcp.demo.gateway")
 _START_OVER_PATH = "/__rcp_demo/start-over"
@@ -733,10 +735,58 @@ def _prepare_demo_session(session: DemoSession) -> None:
     project_id = app.state.default_project_id
     if project_id is None:
         raise GatewayProcessError("The copied demo project did not register.")
+    _enforce_demo_provider_profiles(app, project_id)
     seed_demo_records(
         app.state.background_tasks.store,
         project_id,
         session.stage_root,
+    )
+
+
+def _enforce_demo_provider_profiles(app: FastAPI, project_id: str) -> None:
+    """Keep fresh and retained public sessions on the deterministic provider."""
+
+    service = app.state.catalog.open(project_id)
+    manifest = service.manifest
+    state_machine = manifest.repository_map[manifest.state.repository].machine
+    profiles = {
+        surface: AgentProfileSettings(
+            provider="rcp-demo",
+            runtime="deterministic",
+            model="rcp-demo-1",
+            reasoning="",
+            run_on=state_machine,
+        )
+        for surface in AGENT_EXECUTION_PROFILES
+    }
+    if all(
+        (
+            manifest.agent_profile(surface).provider,
+            manifest.agent_profile(surface).runtime,
+            manifest.agent_profile(surface).model,
+            manifest.agent_profile(surface).reasoning,
+            manifest.agent_profile(surface).run_on,
+        )
+        == (
+            profile.provider,
+            profile.runtime,
+            profile.model,
+            profile.reasoning,
+            profile.run_on,
+        )
+        for surface, profile in profiles.items()
+    ):
+        return
+    app.state.services.project_display_cache.update_settings(
+        project_id,
+        ProjectSettingsRequest(
+            default_run_truth_scope=list(manifest.agent.default_run_truth_scope),
+            default_auto_research_invocation_ceiling=(
+                manifest.agent.default_auto_research_invocation_ceiling
+            ),
+            agent_profiles=profiles,
+            skill_defaults=manifest.agent.skill_defaults,
+        ),
     )
 
 

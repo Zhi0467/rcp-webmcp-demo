@@ -12,9 +12,11 @@ from challenge.gateway import (
     GatewayHttpLimits,
     GatewayOptions,
     _positive_env_int,
+    _prepare_demo_session,
     create_gateway,
 )
 from challenge.gateway_state import COOKIE_NAME, DemoSessionRegistry, GatewayLimits
+from rcp.config import AGENT_EXECUTION_PROFILES, load_manifest
 
 
 class UpstreamHandler(BaseHTTPRequestHandler):
@@ -242,6 +244,31 @@ def test_start_over_control_is_injected_only_into_the_top_level_page(
         assert artifact.status_code == 200
         assert "Start over demo" not in artifact.text
         assert 'data-rcp-public-demo="true"' not in artifact.text
+
+
+def test_retained_session_profiles_are_forced_back_to_rcp_demo(tmp_path: Path) -> None:
+    source = Path(__file__).resolve().parents[1] / "examples" / "demo-project"
+    registry = DemoSessionRegistry(tmp_path / "gateway", source)
+    session = registry.get_or_create(None, client_key="existing-browser").session
+    manifest_path = session.project_root / "state-repo" / ".research" / "manifest.toml"
+    stale = manifest_path.read_text(encoding="utf-8")
+    stale = stale.replace('provider = "rcp-demo"', 'provider = "codex"')
+    stale = stale.replace('model = "rcp-demo-1"', 'model = "gpt-5.6-luna"')
+    manifest_path.write_text(stale, encoding="utf-8")
+
+    _prepare_demo_session(session)
+
+    manifest = load_manifest(manifest_path)
+    assert {
+        (
+            manifest.agent_profile(surface).provider,
+            manifest.agent_profile(surface).runtime,
+            manifest.agent_profile(surface).model,
+            manifest.agent_profile(surface).reasoning,
+            manifest.agent_profile(surface).run_on,
+        )
+        for surface in AGENT_EXECUTION_PROFILES
+    } == {("rcp-demo", "deterministic", "rcp-demo-1", "", "laptop")}
 
 
 def test_two_browsers_receive_different_copies_and_refresh_keeps_progress(

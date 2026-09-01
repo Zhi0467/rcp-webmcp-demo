@@ -63,12 +63,14 @@ def seed_demo_records(store: AppStore, project_id: str, stage_root: Path) -> Age
             or existing.runtime_id != "rcp-demo.jsonl.v1"
             or existing.stage_root != str(stage_root)
             or existing.dispatch_authority != dispatch_authority
-            or (existing.status == "succeeded" and existing.result != result)
         ):
             raise ValueError("The RCP Demo seed identity conflicts with existing task state.")
-        _write_demo_artifact(stage_root, data)
         if existing.status == "succeeded":
+            # A completed seeded task is retained history. New deployments may
+            # improve the clean fixture, but must not rewrite an older visitor's
+            # recorded answer or the artifact bytes that answer describes.
             return existing
+        _write_demo_artifact(stage_root, data)
         store.complete_agent_task(
             existing.operation_id,
             applied_revision=None,

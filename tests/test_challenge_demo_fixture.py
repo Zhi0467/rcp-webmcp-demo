@@ -69,6 +69,48 @@ def test_challenge_seed_is_idempotent_and_uses_ordinary_task_artifacts(tmp_path:
     assert transcript.messages[-1].operation_id == first.operation_id
 
 
+def test_challenge_seed_preserves_completed_history_across_fixture_updates(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    project = tmp_path / "demo-project"
+    shutil.copytree(FIXTURE, project)
+    app = create_named_app(
+        str(project / "state-repo" / ".research" / "manifest.toml"),
+        data_dir=tmp_path / "data",
+    )
+    project_id = app.state.default_project_id
+    store = app.state.background_tasks.store
+    stage_root = tmp_path / "fixture-stage"
+    first = seed_demo_records(store, project_id, stage_root)
+    assert first.result is not None
+    legacy = first.model_copy(
+        update={
+            "result": {
+                **first.result,
+                "messages": ["The previous deployed fixture recorded this answer."],
+            }
+        }
+    )
+    artifact_path = (
+        stage_root / "turns" / DEMO_ARTIFACT_OPERATION_ID / "artifacts" / DEMO_ARTIFACT_NAME
+    )
+    artifact_path.write_bytes(b"retained artifact from the previous deployment")
+    stored_agent_task = store.agent_task
+
+    def legacy_agent_task(operation_id: str):
+        if operation_id == DEMO_ARTIFACT_OPERATION_ID:
+            return legacy
+        return stored_agent_task(operation_id)
+
+    monkeypatch.setattr(store, "agent_task", legacy_agent_task)
+
+    retained = seed_demo_records(store, project_id, stage_root)
+
+    assert retained == legacy
+    assert artifact_path.read_bytes() == b"retained artifact from the previous deployment"
+
+
 def test_challenge_seed_recovers_partial_artifact_and_running_task(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
