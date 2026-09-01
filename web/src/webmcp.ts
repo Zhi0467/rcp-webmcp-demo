@@ -47,7 +47,10 @@ export type WebMcpToolDefinition = {
 };
 
 export type WebMcpModelContext = {
-  registerTool: (definition: WebMcpToolDefinition, options?: { signal?: AbortSignal }) => void;
+  registerTool: (
+    definition: WebMcpToolDefinition,
+    options?: { signal?: AbortSignal },
+  ) => void | Promise<void>;
 };
 
 type DocumentWithModelContext = {
@@ -88,6 +91,22 @@ export function currentWebMcpContext(): WebMcpModelContext | null {
   return typeof document === "undefined" ? null : modelContextFromDocument(document);
 }
 
+function observeWebMcpRegistration(result: void | Promise<void>, signal: AbortSignal): void {
+  if (!result) return;
+  void result.catch((error: unknown) => {
+    if (
+      signal.aborted &&
+      typeof error === "object" &&
+      error !== null &&
+      "name" in error &&
+      error.name === "AbortError"
+    ) {
+      return;
+    }
+    console.error("WebMCP tool registration failed.", error);
+  });
+}
+
 export function registerWebMcpTools(
   definitions: WebMcpToolDefinition[],
   context: WebMcpModelContext | null = currentWebMcpContext(),
@@ -96,7 +115,10 @@ export function registerWebMcpTools(
   const controller = new AbortController();
   try {
     definitions.forEach((definition) => {
-      context.registerTool(definition, { signal: controller.signal });
+      observeWebMcpRegistration(
+        context.registerTool(definition, { signal: controller.signal }),
+        controller.signal,
+      );
     });
   } catch (error) {
     controller.abort();

@@ -429,6 +429,37 @@ test("one controller owns every registration and abort removes them together", (
   registration.dispose();
 });
 
+test("registration promises consume expected aborts and report other failures", () => {
+  const rejectionHandlers = [];
+  const context = {
+    registerTool() {
+      return {
+        catch(handler) {
+          rejectionHandlers.push(handler);
+          return Promise.resolve();
+        },
+      };
+    },
+  };
+  const errors = [];
+  const originalError = console.error;
+  console.error = (...args) => errors.push(args);
+  try {
+    const registration = registerWebMcpTools([definition("one"), definition("two")], context);
+    assert.equal(rejectionHandlers.length, 2);
+
+    registration.dispose();
+    rejectionHandlers[0]({ name: "AbortError" });
+    assert.deepEqual(errors, []);
+
+    const failure = new Error("late registration failure");
+    rejectionHandlers[1](failure);
+    assert.deepEqual(errors, [["WebMCP tool registration failed.", failure]]);
+  } finally {
+    console.error = originalError;
+  }
+});
+
 test("unsupported hosts and empty definitions register nothing", () => {
   assert.equal(registerWebMcpTools([definition()], null), null);
   assert.equal(
