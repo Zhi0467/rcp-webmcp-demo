@@ -185,6 +185,7 @@ def test_setup_records_discovered_provider_paths_in_new_manifest(tmp_path) -> No
     assert manifest.machine_map["laptop"].provider_paths == {
         "codex": "/opt/rcp-test/codex",
         "claude": "/opt/rcp-test/claude",
+        "rcp-demo": "/opt/rcp-test/rcp-demo",
     }
 
 

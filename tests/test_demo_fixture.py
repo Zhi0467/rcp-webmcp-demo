@@ -20,6 +20,7 @@ from pathlib import Path
 import pytest
 
 from rcp.config import load_manifest
+from rcp.control import derive_experiment_control_state
 from rcp.history.manager import HistoryManager
 
 FIXTURE = Path(__file__).resolve().parents[1] / "examples" / "demo-project"
@@ -65,6 +66,18 @@ def test_demo_fixture_still_offers_the_work_the_scenarios_open_it_for(
     # S11 coaches against an existing introduction.
     introduction = demo_state / ".research" / "paper" / "introduction.md"
     assert introduction.read_text().strip(), "S11 needs authored introduction text"
+
+    # The challenge journey can discuss and run through the same normal profile
+    # without launching a real provider or waiting on external work.
+    manifest = load_manifest(demo_state / ".research" / "manifest.toml")
+    assert manifest.agent_profile("node_chat").provider == "rcp-demo"
+    assert manifest.agent_profile("project_chat").provider == "rcp-demo"
+    decision = state.nodes["dec/match-endpoint-or-training-path"]
+    assert decision.status == "decided"
+    assert decision.selected_option == "Match the full update trajectory"
+    control = derive_experiment_control_state(state, "exp/two-update-matched-trajectory")
+    assert control.ready is True
+    assert control.reasons == []
 
 
 def test_checked_in_graph_json_is_what_the_patch_log_produces(demo_state: Path) -> None:

@@ -355,7 +355,7 @@ function taskTrigger(value: unknown): TaskTrigger {
   return value === "experiment_run" || value === "watcher" ? value : "human";
 }
 
-function taskArtifacts(task: AgentTask): AgentArtifactDescriptor[] {
+export function taskArtifacts(task: AgentTask): AgentArtifactDescriptor[] {
   if (!Array.isArray(task.result?.artifacts)) return [];
   return task.result.artifacts.filter(
     (item): item is AgentArtifactDescriptor =>

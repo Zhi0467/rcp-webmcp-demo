@@ -722,6 +722,7 @@ name = "rcp"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
+    { name = "httpx" },
     { name = "pydantic" },
     { name = "python-multipart" },
     { name = "tomlkit" },
@@ -730,7 +731,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "httpx" },
     { name = "pre-commit" },
     { name = "pyinstaller" },
     { name = "pytest" },
@@ -742,6 +742,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.116.0" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "pydantic", specifier = ">=2.11.0" },
     { name = "python-multipart", specifier = ">=0.0.20" },
     { name = "tomlkit", specifier = ">=0.13.3" },
@@ -750,7 +751,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "httpx", specifier = ">=0.28.1" },
     { name = "pre-commit", specifier = ">=4.0" },
     { name = "pyinstaller", specifier = ">=6.21.0" },
     { name = "pytest", specifier = ">=8.4.0" },

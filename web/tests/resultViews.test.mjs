@@ -17,6 +17,10 @@ const nodeChatSource = await readFile(
   new URL("../src/components/NodeChat.tsx", import.meta.url),
   "utf8",
 );
+const chatWorkspaceSource = await readFile(
+  new URL("../src/chatWorkspace.ts", import.meta.url),
+  "utf8",
+);
 const appSource = await readFile(new URL("../src/App.tsx", import.meta.url), "utf8");
 
 after(() => server.close());
@@ -97,7 +101,8 @@ test("the unified artifact handoff does not switch mode or dispatch automaticall
   assert.match(handoff, /setMessage/);
   assert.doesNotMatch(handoff, /selectMode\("work"\)/);
   assert.doesNotMatch(handoff, /onStartTask|send\(/);
-  assert.match(nodeChatSource, /artifact_context: artifactContext/);
+  assert.match(nodeChatSource, /artifactContext,/);
+  assert.match(chatWorkspaceSource, /artifact_context: submission\.artifactContext/);
 });
 
 test("Experiment run conversations no longer receive special result-view props", () => {

@@ -1,6 +1,6 @@
 # Accepted research
 
-Generated from graph revision 7.
+Generated from graph revision 8.
 
 ## Research questions
 

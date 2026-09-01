@@ -11,7 +11,14 @@ from pathlib import Path
 import pytest
 
 from rcp.agents import AgentLauncher, ProviderReadiness
-from rcp.providers import PROVIDER_IDS, ClaudeProfile, CodexProfile, profile_for, runtime_label
+from rcp.providers import (
+    PROVIDER_IDS,
+    ClaudeProfile,
+    CodexProfile,
+    RcpDemoProfile,
+    profile_for,
+    runtime_label,
+)
 
 
 def _result(stdout: str = "", returncode: int = 0) -> subprocess.CompletedProcess[str]:
@@ -263,9 +270,17 @@ def test_authentication_is_read_the_way_each_cli_reports_it() -> None:
     assert not ClaudeProfile().is_authenticated(_result(json.dumps({"loggedIn": False})))
     assert not ClaudeProfile().is_authenticated(_result("not json"))
 
+    assert RcpDemoProfile().login_command("/opt/rcp-demo") == [
+        "/opt/rcp-demo",
+        "auth",
+        "login",
+    ]
+    assert RcpDemoProfile().is_authenticated(_result("RCP Demo is ready\n"))
+    assert not RcpDemoProfile().is_authenticated(_result("RCP Demo is ready\n", returncode=1))
+
 
 def test_the_registry_is_the_only_list_of_providers() -> None:
-    assert PROVIDER_IDS == ("codex", "claude")
+    assert PROVIDER_IDS == ("codex", "claude", "rcp-demo")
     for provider in PROVIDER_IDS:
         assert profile_for(provider).id == provider
         assert profile_for(provider).label
@@ -297,6 +312,7 @@ def test_agent_profile_runtime_is_provider_owned_and_backward_compatible() -> No
         == "app-server"
     )
     assert AgentSurfaceConfig(provider="claude", run_on="local").runtime == "stream-json"
+    assert AgentSurfaceConfig(provider="rcp-demo", run_on="local").runtime == "deterministic"
     with pytest.raises(ValueError, match="does not support runtime"):
         AgentSurfaceConfig(provider="claude", runtime="app-server", run_on="local")
 
@@ -317,6 +333,7 @@ def test_a_durable_runtime_id_is_named_for_the_surface_that_reports_it() -> None
     assert runtime_label("codex", "codex.exec-json.v1") == "Codex exec"
     assert runtime_label("codex", "codex.app-server-stdio.v1") == "Codex app server"
     assert runtime_label("claude", "claude.stream-json.v1") == "Claude stream JSON"
+    assert runtime_label("rcp-demo", "rcp-demo.jsonl.v1") == "RCP Demo deterministic"
     # A record naming a runtime this build no longer offers keeps its stored id.
     assert runtime_label("codex", "codex.retired.v1") == "codex.retired.v1"
 

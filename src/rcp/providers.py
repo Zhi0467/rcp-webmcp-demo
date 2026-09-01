@@ -860,6 +860,99 @@ class ClaudeProfile(ProviderProfile):
         )
 
 
+class RcpDemoProfile(ProviderProfile):
+    """Challenge-only deterministic provider using the ordinary CLI boundary."""
+
+    id = "rcp-demo"
+    label = "RCP Demo"
+    legacy_runtime_id = "rcp-demo.jsonl.v1"
+    default_runtime = "deterministic"
+    runtime_aliases = {
+        "deterministic": legacy_runtime_id,
+        legacy_runtime_id: legacy_runtime_id,
+    }
+    runtime_choices = (ProviderRuntimeChoice(id="deterministic", label="RCP Demo deterministic"),)
+    declared_against = "rcp-demo 1.0"
+    declared = (ModelChoice(id="rcp-demo-1", label="RCP Demo"),)
+
+    def session_roots(self, sources: object, *, remote: bool) -> list[str]:
+        del sources, remote
+        return []
+
+    def auth_command(self, binary: str) -> list[str]:
+        return [binary, "auth", "status"]
+
+    def login_command(self, binary: str) -> list[str]:
+        return [binary, "auth", "login"]
+
+    def is_authenticated(self, result: subprocess.CompletedProcess[str]) -> bool:
+        return result.returncode == 0 and "RCP Demo is ready" in result.stdout
+
+    def skill_probe(self, binary: str) -> ProviderSkillProbe:
+        return ProviderSkillProbe(command=[binary, "skills", "list"], protocol="jsonl")
+
+    def parse_skills(self, payload: object) -> list[ProviderSkill]:
+        if not isinstance(payload, str):
+            raise ValueError("RCP Demo skill inventory is not JSONL text")
+        try:
+            value = json.loads(payload)
+        except json.JSONDecodeError as exc:
+            raise ValueError("RCP Demo skill inventory is not valid JSON") from exc
+        if not isinstance(value, dict) or value.get("skills") != []:
+            raise ValueError("RCP Demo skill inventory must be empty")
+        return []
+
+    def project_write_enforcement_mode(self) -> str:
+        return "rcp-demo.contract-paths.v1"
+
+    def command(
+        self,
+        prompt: str,
+        *,
+        binary: str,
+        cwd: Path,
+        model: str | None,
+        reasoning: str | None,
+        session_id: str | None,
+        read_dirs: list[Path],
+        write_dirs: list[Path],
+        write_scope: ProjectWriteScope | None,
+        capability: AgentCapability,
+        provider_version: str | None,
+    ) -> list[str]:
+        del prompt, cwd, model, reasoning, read_dirs, provider_version
+        if capability in {"work_auto", "orchestrate"}:
+            _require_project_write_scope(
+                write_scope,
+                capability=capability,
+                write_dirs=write_dirs,
+            )
+        elif write_scope is not None:
+            raise ValueError(f"capability {capability!r} cannot carry a project write scope")
+        command = [binary, "turn", "--capability", capability]
+        if session_id:
+            command.extend(["--session", session_id])
+        return command
+
+    def decode_event(self, value: object, raw: str) -> ProviderStreamEvent:
+        if not isinstance(value, dict):
+            return ProviderStreamEvent(event="raw", text=raw)
+        event_type = value.get("type")
+        if event_type == "session.started" and isinstance(value.get("session_id"), str):
+            return ProviderStreamEvent(event="session", session_id=value["session_id"])
+        if event_type == "message" and isinstance(value.get("message"), str):
+            return ProviderStreamEvent(event="message", text=value["message"])
+        if event_type == "result" and isinstance(value.get("result"), str):
+            return ProviderStreamEvent(event="answer", text=value["result"])
+        if event_type == "error":
+            detail = value.get("error")
+            return ProviderStreamEvent(
+                event="error",
+                text=detail if isinstance(detail, str) and detail else "RCP Demo failed.",
+            )
+        return ProviderStreamEvent(event="raw", text=raw)
+
+
 def _provider_error_text(value: dict[str, object]) -> str:
     for candidate in (value.get("result"), value.get("error"), value.get("message")):
         if isinstance(candidate, str) and candidate.strip():
@@ -980,7 +1073,7 @@ def _claude_absolute_pattern(path: str) -> str:
 
 
 PROVIDERS: dict[str, ProviderProfile] = {
-    profile.id: profile for profile in (CodexProfile(), ClaudeProfile())
+    profile.id: profile for profile in (CodexProfile(), ClaudeProfile(), RcpDemoProfile())
 }
 #: Iteration order for every place that walks all providers.
 PROVIDER_IDS: tuple[str, ...] = tuple(PROVIDERS)

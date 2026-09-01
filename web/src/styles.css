@@ -4725,6 +4725,27 @@ button.relation-map-node:hover {
   position: fixed;
   z-index: 10000;
 }
+.webmcp-artifact-overlay {
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  inset: 0;
+  position: fixed;
+  z-index: 12000;
+}
+.webmcp-artifact-overlay > header {
+  align-items: center;
+  border-bottom: 1px solid var(--line-strong);
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+}
+.webmcp-artifact-overlay > iframe {
+  border: 0;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
 .relation-map-overlay-header {
   align-items: flex-start;
   border-bottom: 1px solid var(--line-strong);

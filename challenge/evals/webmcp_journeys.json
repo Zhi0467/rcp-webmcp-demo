@@ -1,0 +1,321 @@
+{
+  "schemaVersion": 1,
+  "states": {
+    "landing": ["rcp_list_projects", "rcp_open_project"],
+    "project_ready": [
+      "rcp_get_project_overview",
+      "rcp_inspect_node",
+      "rcp_list_artifacts",
+      "rcp_open_artifact",
+      "rcp_inspect_conversation",
+      "rcp_send_conversation_message",
+      "rcp_inspect_experiment",
+      "rcp_start_experiment"
+    ],
+    "project_live": [
+      "rcp_get_project_overview",
+      "rcp_inspect_node",
+      "rcp_list_artifacts",
+      "rcp_open_artifact",
+      "rcp_inspect_conversation",
+      "rcp_send_conversation_message",
+      "rcp_inspect_experiment",
+      "rcp_stop_episode"
+    ],
+    "project_completed": [
+      "rcp_get_project_overview",
+      "rcp_inspect_node",
+      "rcp_list_artifacts",
+      "rcp_open_artifact",
+      "rcp_inspect_conversation",
+      "rcp_send_conversation_message",
+      "rcp_inspect_experiment"
+    ]
+  },
+  "cases": [
+    {
+      "id": "list-projects-direct",
+      "state": "landing",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What RCP research projects can I work on?"
+        }
+      ],
+      "expectedCall": [
+        {
+          "functionName": "rcp_list_projects",
+          "arguments": {}
+        }
+      ]
+    },
+    {
+      "id": "open-project-from-list",
+      "state": "landing",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Open the synthetic plasticity project with id project-1."
+        }
+      ],
+      "expectedCall": [
+        {
+          "functionName": "rcp_open_project",
+          "arguments": {
+            "project_id": "project-1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "onboard-with-overview",
+      "state": "project_ready",
+      "messages": [
+        {
+          "role": "user",
+          "content": "I just joined this project. Orient me before we decide what to do."
+        }
+      ],
+      "expectedCall": [
+        {
+          "functionName": "rcp_get_project_overview",
+          "arguments": {}
+        }
+      ]
+    },
+    {
+      "id": "inspect-exact-claim",
+      "state": "project_ready",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Inspect hypothesis hyp-1 so we can discuss the exact saved claim and its relations."
+        }
+      ],
+      "expectedCall": [
+        {
+          "functionName": "rcp_inspect_node",
+          "arguments": {
+            "node_id": "hyp-1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "open-existing-visual-evidence",
+      "state": "project_ready",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Show me the current visual artifact for task-1 so we can inspect it together."
+        }
+      ],
+      "expectedCall": [
+        {
+          "functionName": "rcp_list_artifacts",
+          "arguments": {
+            "task_id": "task-1"
+          }
+        },
+        {
+          "functionName": "rcp_open_artifact",
+          "arguments": {
+            "viewer_id": "task:task-1:artifact-1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "discuss-before-running",
+      "state": "project_ready",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Read chat-1, then ask the provider whether the evidence is strong enough to run the bounded replicate. Keep this as discussion only."
+        }
+      ],
+      "expectedCall": [
+        {
+          "functionName": "rcp_inspect_conversation",
+          "arguments": {
+            "chat_id": "chat-1"
+          }
+        },
+        {
+          "functionName": "rcp_send_conversation_message",
+          "arguments": {
+            "chat_id": "chat-1",
+            "message": "Is the current evidence strong enough to run the bounded replicate?",
+            "mode": "discuss"
+          }
+        }
+      ]
+    },
+    {
+      "id": "inspect-then-start",
+      "state": "project_ready",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Check whether exp-1 is ready. If RCP says it can start, run the next bounded episode."
+        }
+      ],
+      "expectedCall": [
+        {
+          "functionName": "rcp_inspect_experiment",
+          "arguments": {
+            "experiment_id": "exp-1"
+          }
+        },
+        {
+          "functionName": "rcp_start_experiment",
+          "arguments": {
+            "experiment_id": "exp-1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "graceful-stop-live-only",
+      "state": "project_live",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Stop episode episode-1 for exp-1 after its already-authorized work settles."
+        }
+      ],
+      "expectedCall": [
+        {
+          "functionName": "rcp_stop_episode",
+          "arguments": {
+            "experiment_id": "exp-1",
+            "episode_id": "episode-1"
+          }
+        }
+      ]
+    },
+    {
+      "id": "inspect-completed-and-open-report",
+      "state": "project_completed",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Tell me how exp-1 ended and open its episode report."
+        }
+      ],
+      "expectedCall": [
+        {
+          "functionName": "rcp_inspect_experiment",
+          "arguments": {
+            "experiment_id": "exp-1"
+          }
+        },
+        {
+          "functionName": "rcp_open_artifact",
+          "arguments": {
+            "viewer_id": "report:episode-1"
+          }
+        }
+      ]
+    }
+  ],
+  "journeys": [
+    {
+      "id": "onboard-discuss-run-review",
+      "description": "The submission path from a new researcher to a reviewed durable Experiment result.",
+      "steps": [
+        {
+          "state": "landing",
+          "expectedCall": [
+            {
+              "functionName": "rcp_list_projects",
+              "arguments": {}
+            },
+            {
+              "functionName": "rcp_open_project",
+              "arguments": {
+                "project_id": "project-1"
+              }
+            }
+          ]
+        },
+        {
+          "state": "project_ready",
+          "expectedCall": [
+            {
+              "functionName": "rcp_get_project_overview",
+              "arguments": {}
+            },
+            {
+              "functionName": "rcp_inspect_node",
+              "arguments": {
+                "node_id": "hyp-1"
+              }
+            },
+            {
+              "functionName": "rcp_list_artifacts",
+              "arguments": {
+                "task_id": "task-1"
+              }
+            },
+            {
+              "functionName": "rcp_open_artifact",
+              "arguments": {
+                "viewer_id": "task:task-1:artifact-1"
+              }
+            },
+            {
+              "functionName": "rcp_inspect_conversation",
+              "arguments": {
+                "chat_id": "chat-1"
+              }
+            },
+            {
+              "functionName": "rcp_send_conversation_message",
+              "arguments": {
+                "chat_id": "chat-1",
+                "message": "Is the current evidence strong enough to run the bounded replicate?",
+                "mode": "discuss"
+              }
+            },
+            {
+              "functionName": "rcp_inspect_experiment",
+              "arguments": {
+                "experiment_id": "exp-1"
+              }
+            },
+            {
+              "functionName": "rcp_start_experiment",
+              "arguments": {
+                "experiment_id": "exp-1"
+              }
+            }
+          ]
+        },
+        {
+          "state": "project_completed",
+          "expectedCall": [
+            {
+              "functionName": "rcp_inspect_experiment",
+              "arguments": {
+                "experiment_id": "exp-1"
+              }
+            },
+            {
+              "functionName": "rcp_list_artifacts",
+              "arguments": {
+                "episode_id": "episode-1"
+              }
+            },
+            {
+              "functionName": "rcp_open_artifact",
+              "arguments": {
+                "viewer_id": "report:episode-1"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

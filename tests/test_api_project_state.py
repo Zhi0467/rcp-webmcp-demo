@@ -594,14 +594,18 @@ def test_project_readiness_does_not_open_or_materialize_project(
     assert set(calls) == {
         ("codex", False),
         ("claude", False),
+        ("rcp-demo", False),
         ("codex", True),
         ("claude", True),
+        ("rcp-demo", True),
     }
     assert inventory_waits == [
         ("codex", "", None),
         ("claude", "", None),
+        ("rcp-demo", "", None),
         ("codex", "", None),
         ("claude", "", None),
+        ("rcp-demo", "", None),
     ]
     assert project_id not in app.state.catalog._services
 

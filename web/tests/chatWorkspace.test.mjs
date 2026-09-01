@@ -8,6 +8,7 @@ import {
   chatIndicator,
   chatEntryConversationId,
   chatModeStorageKey,
+  conversationTurnRequest,
   conversationHasUnread,
   groupChatConversations,
   isConversationModeShortcut,
@@ -16,6 +17,7 @@ import {
   latestPersistedConversationMode,
   newlyUnreadChatTaskIds,
   parseConversationMode,
+  startConversationTurn,
   toggleConversationMode,
 } from "../src/chatWorkspace.ts";
 
@@ -290,4 +292,62 @@ test("the next turn derives from the latest explicit mode without relabelling le
     latestPersistedConversationMode([{ mode: null, timestamp: "invalid" }], []),
     "discuss",
   );
+});
+
+test("the shared conversation-turn owner preserves the visible composer's request contract", async () => {
+  const submission = {
+    kind: "node_chat",
+    config: { provider: "codex", model: "", reasoning: "high", run_on: "gpu" },
+    runTruthScope: ["repo"],
+    nodeId: "hyp-1",
+    message: "  Compare the held-out curves.  ",
+    chatId: "chat-1",
+    sessionId: "session-1",
+    mode: "work",
+    skills: { workflow_ids: ["analyze"], skill_ids: ["plot"] },
+    providerSkillNames: ["browser"],
+  };
+  assert.deepEqual(conversationTurnRequest(submission), {
+    provider: "codex",
+    model: null,
+    reasoning: "high",
+    run_on: "gpu",
+    run_truth_scope: ["repo"],
+    node_id: "hyp-1",
+    message: "Compare the held-out curves.",
+    chat_id: "chat-1",
+    session_id: "session-1",
+    mode: "work",
+    invoked_workflow_ids: ["analyze"],
+    invoked_skill_ids: ["plot"],
+    invoked_provider_skill_names: ["browser"],
+  });
+  const calls = [];
+  const result = await startConversationTurn(async (kind, request) => {
+    calls.push([kind, request]);
+    return { operation_id: "task-1" };
+  }, submission);
+  assert.equal(result.operation_id, "task-1");
+  assert.deepEqual(calls, [["node_chat", conversationTurnRequest(submission)]]);
+});
+
+test("the shared conversation-turn owner rejects a blank message before dispatch", async () => {
+  const submission = {
+    kind: "project_chat",
+    config: { provider: "codex", model: "", reasoning: "medium", run_on: "local" },
+    runTruthScope: ["repo"],
+    nodeId: null,
+    message: "  ",
+    chatId: "chat-1",
+    sessionId: null,
+    mode: "discuss",
+  };
+  let called = false;
+  await assert.rejects(
+    startConversationTurn(async () => {
+      called = true;
+    }, submission),
+    /non-blank message/,
+  );
+  assert.equal(called, false);
 });

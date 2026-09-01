@@ -1,10 +1,14 @@
 import type {
   AgentRunConfig,
   AgentTask,
+  AgentTaskRequest,
   AgentTaskStatus,
+  ArtifactContextRequest,
   ChatMessage,
   ChatSummary,
   ConversationMode,
+  SkillDefaults,
+  StartAgentTask,
 } from "./types";
 
 export type ChatKind = "node_chat" | "project_chat";
@@ -125,6 +129,58 @@ export function latestPersistedChatConfig(
   });
   candidates.sort((left, right) => left.timestamp - right.timestamp || left.order - right.order);
   return candidates.at(-1)?.config ?? fallback;
+}
+
+export interface ConversationTurnSubmission {
+  kind: ChatKind;
+  config: AgentRunConfig;
+  runTruthScope: string[];
+  nodeId: string | null;
+  message: string;
+  chatId: string;
+  sessionId: string | null;
+  mode: ConversationMode;
+  artifactContext?: ArtifactContextRequest | null;
+  attachmentSetId?: string | null;
+  attachmentClientId?: string | null;
+  skills?: SkillDefaults;
+  providerSkillNames?: string[];
+}
+
+export function conversationTurnRequest(submission: ConversationTurnSubmission): AgentTaskRequest {
+  const message = submission.message.trim();
+  if (!message) throw new Error("A conversation turn requires a non-blank message.");
+  const skills = submission.skills ?? { workflow_ids: [], skill_ids: [] };
+  return {
+    ...submission.config,
+    model: submission.config.model || null,
+    run_truth_scope: submission.runTruthScope,
+    node_id: submission.nodeId,
+    message,
+    chat_id: submission.chatId,
+    session_id: submission.sessionId,
+    mode: submission.mode,
+    ...(submission.artifactContext ? { artifact_context: submission.artifactContext } : {}),
+    ...(submission.attachmentSetId && submission.attachmentClientId
+      ? {
+          attachment_set_id: submission.attachmentSetId,
+          attachment_client_id: submission.attachmentClientId,
+        }
+      : {}),
+    invoked_workflow_ids: skills.workflow_ids,
+    invoked_skill_ids: skills.skill_ids,
+    invoked_provider_skill_names: submission.providerSkillNames ?? [],
+  };
+}
+
+/** One ordinary Discuss/Work dispatch boundary shared by the visible composer
+ * and non-UI callers. Admission and durable task recording remain in App's
+ * StartAgentTask owner. */
+export async function startConversationTurn(
+  startTask: StartAgentTask,
+  submission: ConversationTurnSubmission,
+): Promise<AgentTask> {
+  return startTask(submission.kind, conversationTurnRequest(submission));
 }
 
 export function chatIdForTask(task: AgentTask): string | null {

@@ -27,6 +27,7 @@
     "raised_rev": 4,
     "rejection_reason": null,
     "related_config_keys": [],
+    "related_edge_ids": [],
     "related_node_ids": [
       "hyp/search-restores-future-learning"
     ],
@@ -69,6 +70,7 @@
     "raised_rev": 5,
     "rejection_reason": null,
     "related_config_keys": [],
+    "related_edge_ids": [],
     "related_node_ids": [
       "hyp/search-restores-future-learning"
     ],

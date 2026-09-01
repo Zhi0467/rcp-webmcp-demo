@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.116.0",
+  "httpx>=0.28.1",
   "python-multipart>=0.0.20",
   "pydantic>=2.11.0",
   "tomlkit>=0.13.3",
@@ -14,10 +15,10 @@ dependencies = [
 
 [project.scripts]
 rcp = "rcp.__main__:main"
+rcp-demo = "rcp.demo_provider:main"
 
 [dependency-groups]
 dev = [
-  "httpx>=0.28.1",
   "pre-commit>=4.0",
   "pyinstaller>=6.21.0",
   "pytest>=8.4.0",

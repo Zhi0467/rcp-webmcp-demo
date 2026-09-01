@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: rcp-webmcp-demo
+    runtime: python
+    region: virginia
+    plan: 1c-2g
+    branch: codex/webmcp-challenge
+    autoDeployTrigger: commit
+    buildCommand: npm --prefix web ci && npm --prefix web run build && uv sync --frozen --no-dev
+    startCommand: uv run --frozen --no-dev python -m challenge.gateway --trust-forwarded-for
+    healthCheckPath: /__rcp_demo/health
+    maxShutdownDelaySeconds: 60
+    numInstances: 1
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.11
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: RCP_DEMO_ROOT
+        value: /var/data/rcp-demo
+      - key: RCP_DEMO_MAX_SESSIONS
+        value: "500"
+      - key: RCP_DEMO_MAX_TOTAL_BYTES
+        value: "8589934592"
+      - key: RCP_DEMO_MAX_SESSION_BYTES
+        value: "33554432"
+      - key: RCP_DEMO_MAX_PROCESSES
+        value: "12"
+      - key: RCP_DEMO_MAX_CONCURRENT_REQUESTS
+        value: "128"
+      - key: RCP_DEMO_MAX_CONCURRENT_PER_SESSION
+        value: "8"
+    disk:
+      name: rcp-webmcp-demo-data
+      mountPath: /var/data
+      sizeGB: 10
