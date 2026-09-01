@@ -24,9 +24,12 @@ state machine. The ordinary app remains fully usable when Site Tools are absent.
 
 ## Demo journey
 
-The hosted site contains a synthetic continual-learning project and a
-deterministic challenge provider named **RCP Demo**. A researcher can ask the
-browser agent to:
+The hosted site contains a small synthetic continual-learning study and a
+deterministic challenge provider named **RCP Demo**. The checked-in study has a
+complete 30-row table: three fixed seeds, a value-only and a search-assisted
+arm, and five updates on a second task shift after their first-shift return and
+policy-KL paths were matched. A standard-library script reproduces every
+reported number. A researcher can ask the browser agent to:
 
 1. list and open the project;
 2. explain its research question, hypotheses, evidence, and blockers;
@@ -37,9 +40,11 @@ browser agent to:
 7. observe the real episode move from ready to live to completed; and
 8. open the newly persisted visual result and explain its limited conclusion.
 
-The deterministic result completes only the scoped synthetic replicate. It
-does not resolve the broader research question or silently change hypothesis
-standing.
+The deterministic result verifies the 30 rows and matching gate, then reports
+mean second-shift slopes of 0.178333 for search-assisted and 0.025333 for
+value-only, a difference of 0.153. It completes only that scoped synthetic
+replicate. It does not identify a causal mechanism, resolve the broader
+research question, or silently change hypothesis standing.
 
 ## Site Tools
 
@@ -94,8 +99,16 @@ The hosted demo adds a challenge-only gateway in front of ordinary RCP:
 - refresh, browser reopen, and child restart preserve that browser's progress;
 - a different browser identity receives a different copy;
 - management and filesystem-facing routes are blocked at the public boundary;
+- all six provider profiles are pinned to RCP Demo, provider selectors are
+  visibly disabled, and settings or executable-resolution writes are refused;
 - storage, process, request, and concurrency limits fail closed; and
 - **Start over demo** is an explicit human-only action, never a WebMCP tool.
+
+The public URL therefore never receives or exposes Codex or Claude
+credentials. The same source branch was separately verified in a disposable
+local project with the normal Codex provider: both a Discuss turn and a bounded
+Experiment completed through WebMCP using `codex.exec-json.v1`, applied a valid
+graph revision, and produced a visible episode report.
 
 The gateway and RCP Demo provider exist to make public judging safe and
 reproducible. They are challenge deployment scaffolding, not claimed as durable
@@ -132,10 +145,11 @@ Sol or Terra.
 
 ## Verification
 
-The hosted HTTPS build and complete private challenge branch have passed:
+Verification for the current public checkout and complete private challenge
+branch includes:
 
-- 3,208 backend tests with nine expected skips;
-- 508 Web tests;
+- 3,209 backend tests with nine expected skips on the complete private branch;
+- 511 Web tests;
 - the production TypeScript build;
 - Ruff and all repository pre-commit hooks;
 - an actual Codex in-app-browser journey through project discovery, exact node
@@ -146,12 +160,14 @@ The hosted HTTPS build and complete private challenge branch have passed:
   through a Render service restart;
 - clean hosted browser and Render application logs; and
 - local production-gateway checks for cookie resume, restart persistence,
-  two-browser isolation, route refusal, and bounded concurrent children.
+  two-browser isolation, RCP Demo-only disabled profiles, settings and provider
+  resolution refusal, human-only reset, and bounded concurrent children.
 
 This source-only public snapshot intentionally omits the private documentation
 tree, agent instructions, and the two test files that enforce that internal
 documentation layout. Its exact runnable backend suite contains the remaining
-3,200 product tests with nine expected skips.
+3,199 product tests with nine expected skips, measured from this public
+checkout rather than inferred from the private count.
 
 Checked-in journey cases live in `challenge/evals/webmcp_journeys.json`.
 
@@ -180,7 +196,8 @@ The challenge work adds:
 
 - imperative top-level WebMCP registration;
 - eleven bounded schemas and results;
-- state-dependent tool discovery and invocation-time revalidation;
+- stable state-dependent tool discovery, in-flight call completion, and
+  invocation-time revalidation;
 - shared navigation, Send, Start, Stop, and artifact-viewer ownership;
 - the deterministic synthetic evaluation fixture;
 - browser-isolated public demo hosting; and
