@@ -1,0 +1,17 @@
+[Unit]
+Description=Research Control Panel protected backup
+After=network-online.target rcp.service
+Wants=network-online.target
+ConditionPathExists=/etc/rcp/server.toml
+ConditionPathExists=/etc/rcp/current
+
+[Service]
+Type=oneshot
+User=rcp
+Group=rcp
+WorkingDirectory=/etc/rcp/current
+Environment=RCP_DATA_DIR=/home/rcp/rcp-server/data
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/local/bin/rcp server backup run
+UMask=0077
+NoNewPrivileges=true

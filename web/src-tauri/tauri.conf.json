@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "RCP",
+  "version": "../package.json",
+  "identifier": "app.researchcontrolpanel.rcp",
+  "build": {
+    "beforeDevCommand": "npm run dev -- --host 127.0.0.1",
+    "devUrl": "http://127.0.0.1:5173",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [],
+    "security": {
+      "capabilities": ["main"]
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "disabled"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "copyright": "Copyright 2026 RCP contributors",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns"
+    ],
+    "macOS": {
+      "infoPlist": "Info.plist",
+      "minimumSystemVersion": "13.0",
+      "signingIdentity": null
+    },
+    "targets": ["app"]
+  }
+}

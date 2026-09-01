@@ -1,0 +1,10 @@
+{
+  "build": {
+    "beforeBuildCommand": "npm run build:clean"
+  },
+  "bundle": {
+    "macOS": {
+      "infoPlist": "generated/Info.dev.plist"
+    }
+  }
+}

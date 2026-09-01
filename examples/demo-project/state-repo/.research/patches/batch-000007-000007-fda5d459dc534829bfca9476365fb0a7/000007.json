@@ -1,0 +1,35 @@
+{
+  "revision": 7,
+  "kind": "approval",
+  "author": "human",
+  "created_at": "2026-07-30T10:15:03.914963Z",
+  "summary": "Synced staged changes for hyp/search-restores-future-learning.",
+  "ops": [
+    {
+      "op": "update_nodes",
+      "nodes": [
+        {
+          "id": "hyp/search-restores-future-learning",
+          "base_updated_rev": 6,
+          "changes": {
+            "scope": "Matched compute and matched first-update trajectories on unseen post-shift tasks."
+          }
+        }
+      ]
+    },
+    {
+      "op": "set_standing",
+      "node_id": "hyp/search-restores-future-learning",
+      "standing": "asserted"
+    }
+  ],
+  "run_truth_scope": [],
+  "repositories_read": [],
+  "processed_cursors": {},
+  "change_summary": [
+    "Updated wording for hyp/search-restores-future-learning.",
+    "hyp/search-restores-future-learning is now asserted."
+  ],
+  "admission": "accepted",
+  "admission_messages": []
+}

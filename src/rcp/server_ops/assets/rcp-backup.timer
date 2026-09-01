@@ -1,0 +1,12 @@
+[Unit]
+Description=Research Control Panel protected backup schedule
+ConditionPathExists=/etc/rcp/server.toml
+ConditionPathExists=/etc/rcp/current
+
+[Timer]
+OnCalendar=@RCP_BACKUP_ON_CALENDAR@
+Persistent=true
+Unit=rcp-backup.service
+
+[Install]
+WantedBy=timers.target

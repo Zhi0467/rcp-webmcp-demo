@@ -1,0 +1,43 @@
+{
+  "name": "rcp-web",
+  "private": true,
+  "version": "0.3.2",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "desktop:dev": "tauri dev",
+    "desktop:same-origin": "RCP_DESKTOP_FRONTEND_URL=http://127.0.0.1:8421 tauri dev --no-dev-server --no-dev-server-wait --config src-tauri/tauri.same-origin.conf.json",
+    "desktop:build-dev": "sh src-tauri/scripts/build-dev.sh",
+    "desktop:prepare-sidecar": "sh src-tauri/scripts/prepare-sidecar.sh",
+    "desktop:build": "sh src-tauri/scripts/build-release.sh",
+    "desktop:build-signed": "sh src-tauri/scripts/build-release.sh --updater",
+    "build": "tsc -b && vite build",
+    "build:clean": "tsc -b && vite build --emptyOutDir",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "typecheck": "tsc -b --pretty false"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.11",
+    "@tauri-apps/api": "^2.11.1",
+    "d3-force": "^3.0.0",
+    "katex": "^0.16.47",
+    "lucide-react": "^0.525.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math-extended": "^6.1.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.11.4",
+    "@types/d3-force": "^3.0.10",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "prettier": "3.9.6",
+    "tailwindcss": "^4.1.11",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  }
+}

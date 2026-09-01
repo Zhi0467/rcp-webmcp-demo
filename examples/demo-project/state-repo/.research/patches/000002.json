@@ -1,0 +1,13 @@
+{
+  "revision": 2,
+  "kind": "approval",
+  "author": "human",
+  "created_at": "2026-07-25T10:20:00Z",
+  "summary": "Accepted the primary research question.",
+  "run_truth_scope": [],
+  "repositories_read": [],
+  "processed_cursors": {},
+  "change_summary": ["The primary question now enters research.md."],
+  "ops": [{"op": "set_standing", "node_id": "rq/plasticity-under-shift", "standing": "accepted"}]
+}
+

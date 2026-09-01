@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-reconnect-backend"
+description = "Enables the desktop_reconnect_backend command without any pre-configured scope."
+commands.allow = ["desktop_reconnect_backend"]
+
+[[permission]]
+identifier = "deny-desktop-reconnect-backend"
+description = "Denies the desktop_reconnect_backend command without any pre-configured scope."
+commands.deny = ["desktop_reconnect_backend"]

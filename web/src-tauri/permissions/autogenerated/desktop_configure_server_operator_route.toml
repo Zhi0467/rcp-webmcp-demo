@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-configure-server-operator-route"
+description = "Enables the desktop_configure_server_operator_route command without any pre-configured scope."
+commands.allow = ["desktop_configure_server_operator_route"]
+
+[[permission]]
+identifier = "deny-desktop-configure-server-operator-route"
+description = "Denies the desktop_configure_server_operator_route command without any pre-configured scope."
+commands.deny = ["desktop_configure_server_operator_route"]

@@ -1,0 +1,29 @@
+{
+  "revision": 1,
+  "kind": "identity",
+  "author": null,
+  "producer": "system",
+  "created_at": "2026-08-28T19:10:21.924802Z",
+  "summary": "Project created.",
+  "ops": [],
+  "run_truth_scope": [],
+  "repositories_read": [],
+  "processed_cursors": {},
+  "change_summary": [],
+  "source_operation_id": null,
+  "human_action": null,
+  "agent_action": null,
+  "admission": "accepted",
+  "admission_messages": [],
+  "experiment_control_node_id": null,
+  "experiment_decision_bundle": [],
+  "project_identity": {
+    "project_id": "9c0441cf-5f19-47ae-8300-ff64a480932c",
+    "home_space_id": "1b7a2dcb-7160-45ff-9011-3dd2f275b7f0",
+    "action": "created"
+  },
+  "authorized_by": null,
+  "profile": null,
+  "task_id": null,
+  "campaign_id": null
+}

@@ -1,0 +1,14 @@
+{
+  "earliest_timestamp": "2026-07-04T00:00:00Z",
+  "note": "The demo seed begins on July 4 and deliberately skips one superseded curriculum thread.",
+  "repositories_never_seen": [
+    "crlp-demo-secondary"
+  ],
+  "repositories_seen": [
+    "crlp-demo-state"
+  ],
+  "sessions_read": [],
+  "sessions_skipped": [
+    "crlp-demo-state/laptop/claude/abandoned-curriculum-thread"
+  ]
+}

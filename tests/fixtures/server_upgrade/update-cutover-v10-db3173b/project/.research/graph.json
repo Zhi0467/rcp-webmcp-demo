@@ -1,0 +1,32 @@
+{
+  "ambiguities": {},
+  "belief_transitions": [],
+  "config_revisions": {},
+  "coverage": {
+    "earliest_timestamp": null,
+    "note": "No seed has completed.",
+    "repositories_never_seen": [
+      "repo"
+    ],
+    "repositories_seen": [],
+    "sessions_read": [],
+    "sessions_skipped": []
+  },
+  "edges": {},
+  "glossary": {},
+  "last_refresh_at": null,
+  "nodes": {},
+  "ontology": {
+    "fields": [],
+    "relations": [],
+    "types": []
+  },
+  "project_truth_scope": [
+    "repo"
+  ],
+  "proposals": {},
+  "replay_failure": null,
+  "replay_status": "complete",
+  "revision": 1,
+  "validation_messages": []
+}

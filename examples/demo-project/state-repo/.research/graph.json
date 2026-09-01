@@ -1,0 +1,433 @@
+{
+  "ambiguities": {
+    "amb/endpoint-versus-path-match": {
+      "artifact_refs": [],
+      "candidates": [
+        "Endpoint matching is sufficient",
+        "The full update path must be matched"
+      ],
+      "id": "amb/endpoint-versus-path-match",
+      "question": "Is endpoint matching enough to attribute later plasticity to replanning?",
+      "raised_rev": 4,
+      "related_node_ids": [
+        "dec/match-endpoint-or-training-path",
+        "exp/two-update-matched-trajectory"
+      ],
+      "status": "open",
+      "why_it_matters": "The answer determines whether the current experiment isolates a mechanism or only compares two training histories."
+    }
+  },
+  "belief_transitions": [
+    {
+      "cause": {
+        "kind": "proposal_resolution",
+        "ref_id": "prop/weaken-search-with-cause"
+      },
+      "from_status": "active",
+      "hypothesis_id": "hyp/search-restores-future-learning",
+      "revision": 6,
+      "to_status": "weakened"
+    }
+  ],
+  "config_revisions": {},
+  "coverage": {
+    "earliest_timestamp": "2026-07-04T00:00:00Z",
+    "note": "The demo seed begins on July 4 and deliberately skips one superseded curriculum thread.",
+    "repositories_never_seen": [
+      "crlp-demo-secondary"
+    ],
+    "repositories_seen": [
+      "crlp-demo-state"
+    ],
+    "sessions_read": [],
+    "sessions_skipped": [
+      "crlp-demo-state/laptop/claude/abandoned-curriculum-thread"
+    ]
+  },
+  "edges": {
+    "ev/endpoint-match-is-insufficient::inconclusive::hyp/search-restores-future-learning": {
+      "created_rev": 1,
+      "explanation": "The observation motivates tighter matching but does not yet test the causal prediction.",
+      "id": "ev/endpoint-match-is-insufficient::inconclusive::hyp/search-restores-future-learning",
+      "layer": "epistemic",
+      "relation": "inconclusive",
+      "source": "ev/endpoint-match-is-insufficient",
+      "target": "hyp/search-restores-future-learning"
+    },
+    "ev/external-path-match-study::supports::blk/missing-optimizer-state": {
+      "created_rev": 5,
+      "explanation": "This deliberately provisional edge demonstrates a visible endpoint-type flag.",
+      "id": "ev/external-path-match-study::supports::blk/missing-optimizer-state",
+      "layer": "seam",
+      "relation": "supports",
+      "source": "ev/external-path-match-study",
+      "target": "blk/missing-optimizer-state"
+    },
+    "exp/two-update-matched-trajectory::governed_by::dec/match-endpoint-or-training-path": {
+      "created_rev": 1,
+      "explanation": "",
+      "id": "exp/two-update-matched-trajectory::governed_by::dec/match-endpoint-or-training-path",
+      "layer": "action",
+      "relation": "governed_by",
+      "source": "exp/two-update-matched-trajectory",
+      "target": "dec/match-endpoint-or-training-path"
+    },
+    "exp/two-update-matched-trajectory::produces::ev/endpoint-match-is-insufficient": {
+      "created_rev": 1,
+      "explanation": "",
+      "id": "exp/two-update-matched-trajectory::produces::ev/endpoint-match-is-insufficient",
+      "layer": "seam",
+      "relation": "produces",
+      "source": "exp/two-update-matched-trajectory",
+      "target": "ev/endpoint-match-is-insufficient"
+    },
+    "exp/two-update-matched-trajectory::tests::hyp/search-restores-future-learning": {
+      "created_rev": 1,
+      "explanation": "",
+      "id": "exp/two-update-matched-trajectory::tests::hyp/search-restores-future-learning",
+      "layer": "seam",
+      "relation": "tests",
+      "source": "exp/two-update-matched-trajectory",
+      "target": "hyp/search-restores-future-learning"
+    },
+    "rq/plasticity-under-shift::has_decision::dec/match-endpoint-or-training-path": {
+      "created_rev": 1,
+      "explanation": "",
+      "id": "rq/plasticity-under-shift::has_decision::dec/match-endpoint-or-training-path",
+      "layer": "seam",
+      "relation": "has_decision",
+      "source": "rq/plasticity-under-shift",
+      "target": "dec/match-endpoint-or-training-path"
+    },
+    "rq/plasticity-under-shift::has_hypothesis::hyp/search-restores-future-learning": {
+      "created_rev": 1,
+      "explanation": "",
+      "id": "rq/plasticity-under-shift::has_hypothesis::hyp/search-restores-future-learning",
+      "layer": "epistemic",
+      "relation": "has_hypothesis",
+      "source": "rq/plasticity-under-shift",
+      "target": "hyp/search-restores-future-learning"
+    }
+  },
+  "glossary": {
+    "endpoint_kl": {
+      "plain_definition": "Policy divergence measured only at the final checkpoint.",
+      "term": "endpoint_kl",
+      "updated_rev": 1,
+      "where_defined": "configs/metrics.yaml:endpoint_kl"
+    },
+    "two-update": {
+      "plain_definition": "A controlled sequence that measures learning on a second unseen task after an initial adaptation.",
+      "term": "two-update",
+      "updated_rev": 1,
+      "where_defined": "experiments/two_update.py"
+    }
+  },
+  "last_refresh_at": "2026-07-30T08:00:00Z",
+  "nodes": {
+    "blk/missing-optimizer-state": {
+      "blocker_type": "implementation",
+      "created_rev": 1,
+      "description": "The second smoke could not preserve the intended update history after resume.",
+      "extension_fields": {},
+      "extension_type": null,
+      "id": "blk/missing-optimizer-state",
+      "recommended_action": "Keep the repaired resume assertion in the smoke test.",
+      "resolution_condition": "Checkpoint and reload optimizer plus scheduler state.",
+      "source_refs": [],
+      "standing": "asserted",
+      "status": "resolved",
+      "title": "Resume omitted optimizer state",
+      "type": "blocker",
+      "updated_rev": 1
+    },
+    "dec/match-endpoint-or-training-path": {
+      "consequences": [
+        "Determines whether retention and future plasticity can be separated"
+      ],
+      "created_rev": 1,
+      "extension_fields": {},
+      "extension_type": null,
+      "id": "dec/match-endpoint-or-training-path",
+      "options": [
+        "Match endpoint performance",
+        "Match the full update trajectory"
+      ],
+      "question": "Should the first controlled study match endpoint performance or the full training path?",
+      "rationale": null,
+      "selected_option": null,
+      "source_refs": [],
+      "standing": "asserted",
+      "status": "open",
+      "title": "Choose the causal matching target",
+      "type": "decision",
+      "updated_rev": 1
+    },
+    "ev/endpoint-match-is-insufficient": {
+      "artifact_refs": [
+        "runs/two-update-smoke/metrics.json"
+      ],
+      "created_rev": 1,
+      "extension_fields": {},
+      "extension_type": null,
+      "id": "ev/endpoint-match-is-insufficient",
+      "interpretation": "Endpoint equality alone does not isolate the mechanism responsible for later learning.",
+      "observation": "Two arms reached similar endpoint return while their update-wise KL and gradient norms diverged.",
+      "origin": "unknown",
+      "source_refs": [],
+      "standing": "asserted",
+      "strength": "preliminary",
+      "title": "Endpoint matching leaves different learning paths",
+      "type": "evidence",
+      "updated_rev": 1,
+      "validity": "valid"
+    },
+    "ev/external-path-match-study": {
+      "artifact_refs": [
+        "papers/matched-path-comparison"
+      ],
+      "created_rev": 5,
+      "extension_fields": {},
+      "extension_type": null,
+      "id": "ev/external-path-match-study",
+      "interpretation": "Endpoint matching alone is not enough to attribute future plasticity to replanning.",
+      "observation": "A published matched-path comparison found that endpoint agreement did not imply the same later learning curve.",
+      "origin": "external_publication",
+      "source_refs": [],
+      "standing": "asserted",
+      "strength": "supporting",
+      "title": "External path-matching study",
+      "type": "evidence",
+      "updated_rev": 5,
+      "validity": "qualified"
+    },
+    "exp/two-update-matched-trajectory": {
+      "attempts": [
+        {
+          "attempt_kind": "external_run",
+          "configuration": "8 episodes",
+          "debug": null,
+          "decision_bundle": [],
+          "failure_reason": "Dataset path resolved to a stale mount",
+          "finished_at": null,
+          "id": "attempt/01",
+          "job_refs": [
+            "9134421"
+          ],
+          "outcome": null,
+          "purpose": "Configuration smoke",
+          "sequence": 1,
+          "source_refs": [],
+          "started_at": null,
+          "status": "failed"
+        },
+        {
+          "attempt_kind": "external_run",
+          "configuration": "32 episodes",
+          "debug": null,
+          "decision_bundle": [],
+          "failure_reason": "Optimizer state was absent",
+          "finished_at": null,
+          "id": "attempt/02",
+          "job_refs": [
+            "9135198"
+          ],
+          "outcome": null,
+          "purpose": "Checkpoint resume smoke",
+          "sequence": 2,
+          "source_refs": [],
+          "started_at": null,
+          "status": "failed"
+        },
+        {
+          "attempt_kind": "external_run",
+          "configuration": "128 episodes",
+          "debug": null,
+          "decision_bundle": [],
+          "failure_reason": null,
+          "finished_at": null,
+          "id": "attempt/03",
+          "job_refs": [
+            "9136024"
+          ],
+          "outcome": null,
+          "purpose": "Repaired causal smoke",
+          "sequence": 3,
+          "source_refs": [],
+          "started_at": null,
+          "status": "running"
+        }
+      ],
+      "completion_criteria": [
+        "Three seeds per arm",
+        "Matched first-shift endpoint KL"
+      ],
+      "created_rev": 1,
+      "current_summary": "The repaired smoke is running; the first two attempts exposed unrelated data and checkpoint failures.",
+      "design": "Train value-only and search-assisted arms through one shift, then measure learning on an unseen second shift.",
+      "expected_outcomes": [
+        "Search changes the second-shift learning curve",
+        "Endpoint-only gains disappear under path matching"
+      ],
+      "extension_fields": {},
+      "extension_type": null,
+      "id": "exp/two-update-matched-trajectory",
+      "interpretation_rules": [
+        "Current performance is not future plasticity",
+        "A single checkpoint is not a learning curve"
+      ],
+      "invocation_ceiling": 5,
+      "next_action": "Inspect the first complete second-shift learning curve.",
+      "objective": "Measure future learning after matching the first update's compute and endpoint behavior.",
+      "source_refs": [],
+      "standing": "asserted",
+      "status": "running",
+      "title": "Two-update matched trajectory",
+      "type": "experiment",
+      "updated_rev": 1
+    },
+    "hyp/search-restores-future-learning": {
+      "created_rev": 1,
+      "extension_fields": {},
+      "extension_type": null,
+      "id": "hyp/search-restores-future-learning",
+      "predictions": [
+        "Post-shift learning recovers faster",
+        "The advantage survives matched endpoint performance"
+      ],
+      "rationale": "Planning can reduce pressure to encode transient policy shortcuts in the value network.",
+      "scope": "Matched compute and matched first-update trajectories on unseen post-shift tasks.",
+      "source_refs": [],
+      "standing": "asserted",
+      "statement": "Search-assisted training may preserve later learning, but the mechanism remains unidentified until update histories are matched.",
+      "status": "weakened",
+      "title": "Search restores future learning",
+      "type": "hypothesis",
+      "updated_rev": 7
+    },
+    "rq/plasticity-under-shift": {
+      "created_rev": 1,
+      "extension_fields": {},
+      "extension_type": null,
+      "id": "rq/plasticity-under-shift",
+      "motivation": "Persistent learners must keep adapting after repeated distribution shifts.",
+      "question": "Does search-time replanning restore the learning ability a value network loses after the task changes, or only postpone its decay?",
+      "scope": "Matched update histories, compute, and unseen post-shift learning curves.",
+      "source_refs": [],
+      "standing": "accepted",
+      "status": "open",
+      "title": "Plasticity after the task changes",
+      "type": "research_question",
+      "updated_rev": 2
+    }
+  },
+  "ontology": {
+    "fields": [],
+    "relations": [],
+    "types": []
+  },
+  "project_truth_scope": [
+    "crlp-demo-state",
+    "crlp-demo-secondary"
+  ],
+  "proposals": {
+    "prop/weaken-search-restores-learning": {
+      "base_rev": 3,
+      "card": {
+        "consequences": "The project would treat the current run as evidence about a combined training intervention, not replanning alone.",
+        "decision_needed": "Decide whether to weaken the hypothesis before the matched-path run finishes.",
+        "situation_cold": "The accepted hypothesis says replanning restores future learning, but the current comparison does not yet match the learning path that produced the endpoint.",
+        "why_human_now": "Weakening an accepted scientific claim changes the instruction sent to every control-panel agent."
+      },
+      "created_by": "agent",
+      "created_by_operation_id": null,
+      "id": "prop/weaken-search-restores-learning",
+      "ops": [
+        {
+          "nodes": [
+            {
+              "changes": {
+                "statement": "Search-assisted training may preserve later learning, but the mechanism remains unidentified until update histories are matched.",
+                "status": "weakened"
+              },
+              "id": "hyp/search-restores-future-learning"
+            }
+          ],
+          "op": "update_nodes"
+        }
+      ],
+      "raised_rev": 4,
+      "rejection_reason": null,
+      "related_config_keys": [],
+      "related_node_ids": [
+        "hyp/search-restores-future-learning"
+      ],
+      "resolution_reason": null,
+      "resolved_by": "agent",
+      "resolved_by_operation_id": null,
+      "resolved_rev": 5,
+      "status": "withdrawn",
+      "title": "Narrow what the search result would establish"
+    },
+    "prop/weaken-search-with-cause": {
+      "base_rev": 4,
+      "card": {
+        "consequences": "The project would treat the current run as evidence about a combined training intervention, not replanning alone.",
+        "decision_needed": "Decide whether to weaken the hypothesis before the matched-path run finishes.",
+        "situation_cold": "The accepted hypothesis says replanning restores future learning, while the current comparison does not match the learning path that produced the endpoint.",
+        "why_human_now": "Weakening an accepted scientific claim changes the instruction sent to every control-panel agent."
+      },
+      "created_by": "agent",
+      "created_by_operation_id": null,
+      "id": "prop/weaken-search-with-cause",
+      "ops": [
+        {
+          "nodes": [
+            {
+              "cause": {
+                "kind": "proposal_resolution",
+                "ref_id": "prop/weaken-search-with-cause"
+              },
+              "changes": {
+                "statement": "Search-assisted training may preserve later learning, but the mechanism remains unidentified until update histories are matched.",
+                "status": "weakened"
+              },
+              "id": "hyp/search-restores-future-learning"
+            }
+          ],
+          "op": "update_nodes"
+        }
+      ],
+      "raised_rev": 5,
+      "rejection_reason": null,
+      "related_config_keys": [],
+      "related_node_ids": [
+        "hyp/search-restores-future-learning"
+      ],
+      "resolution_reason": null,
+      "resolved_by": "human",
+      "resolved_by_operation_id": null,
+      "resolved_rev": 6,
+      "status": "approved",
+      "title": "Narrow what the search result would establish"
+    }
+  },
+  "replay_failure": null,
+  "replay_status": "complete",
+  "revision": 7,
+  "validation_messages": [
+    {
+      "code": "relation-type-mismatch",
+      "level": "flag",
+      "message": "Edge 'ev/external-path-match-study::supports::blk/missing-optimizer-state' uses 'supports' from evidence to blocker; allowed source types are [evidence] and target types are [hypothesis].",
+      "patch_revision": 5,
+      "related_edge_ids": [
+        "ev/external-path-match-study::supports::blk/missing-optimizer-state"
+      ],
+      "related_node_ids": [
+        "ev/external-path-match-study",
+        "blk/missing-optimizer-state"
+      ]
+    }
+  ]
+}

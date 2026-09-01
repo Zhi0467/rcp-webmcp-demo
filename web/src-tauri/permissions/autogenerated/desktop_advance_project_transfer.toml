@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-advance-project-transfer"
+description = "Enables the desktop_advance_project_transfer command without any pre-configured scope."
+commands.allow = ["desktop_advance_project_transfer"]
+
+[[permission]]
+identifier = "deny-desktop-advance-project-transfer"
+description = "Denies the desktop_advance_project_transfer command without any pre-configured scope."
+commands.deny = ["desktop_advance_project_transfer"]

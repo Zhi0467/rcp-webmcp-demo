@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-connect-team-tunnel"
+description = "Enables the desktop_connect_team_tunnel command without any pre-configured scope."
+commands.allow = ["desktop_connect_team_tunnel"]
+
+[[permission]]
+identifier = "deny-desktop-connect-team-tunnel"
+description = "Denies the desktop_connect_team_tunnel command without any pre-configured scope."
+commands.deny = ["desktop_connect_team_tunnel"]

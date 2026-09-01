@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-run-project-provision"
+description = "Enables the desktop_run_project_provision command without any pre-configured scope."
+commands.allow = ["desktop_run_project_provision"]
+
+[[permission]]
+identifier = "deny-desktop-run-project-provision"
+description = "Denies the desktop_run_project_provision command without any pre-configured scope."
+commands.deny = ["desktop_run_project_provision"]

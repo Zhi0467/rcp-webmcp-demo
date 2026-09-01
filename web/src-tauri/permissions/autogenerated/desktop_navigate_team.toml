@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-navigate-team"
+description = "Enables the desktop_navigate_team command without any pre-configured scope."
+commands.allow = ["desktop_navigate_team"]
+
+[[permission]]
+identifier = "deny-desktop-navigate-team"
+description = "Denies the desktop_navigate_team command without any pre-configured scope."
+commands.deny = ["desktop_navigate_team"]

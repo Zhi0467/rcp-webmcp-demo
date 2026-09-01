@@ -1,0 +1,113 @@
+name = "continual-RL-plasticity-demo"
+
+[[machines]]
+alias = "laptop"
+host = ""
+
+[[repositories]]
+alias = "crlp-demo-state"
+machine = "laptop"
+path = "."
+
+[[repositories]]
+alias = "crlp-demo-secondary"
+machine = "laptop"
+path = "../secondary-repo"
+
+[project]
+truth_scope = ["crlp-demo-state", "crlp-demo-secondary"]
+
+[state]
+repository = "crlp-demo-state"
+
+[agent]
+default_run_truth_scope = ["crlp-demo-state"]
+
+[agent.seed]
+provider = "codex"
+model = ""
+reasoning = "medium"
+run_on = "laptop"
+write_path = "protected"
+
+[agent.seed.permissions]
+read_graph = true
+read_research_md = true
+read_introduction = true
+read_repositories = "run_scope"
+read_conversations = "run_scope"
+write_graph_patch = true
+write_project_files = false
+write_paper = false
+
+[agent.refresh]
+provider = "codex"
+model = ""
+reasoning = "medium"
+run_on = "laptop"
+write_path = "protected"
+
+[agent.refresh.permissions]
+read_graph = true
+read_research_md = true
+read_introduction = true
+read_repositories = "run_scope"
+read_conversations = "run_scope"
+write_graph_patch = true
+write_project_files = false
+write_paper = false
+
+[agent.node_chat]
+provider = "codex"
+model = ""
+reasoning = "medium"
+run_on = "laptop"
+write_path = "protected"
+
+[agent.node_chat.permissions]
+read_graph = true
+read_research_md = true
+read_introduction = true
+read_repositories = "run_scope"
+read_conversations = "run_scope"
+write_graph_patch = true
+write_project_files = false
+write_paper = false
+
+[agent.project_chat]
+provider = "codex"
+model = ""
+reasoning = "medium"
+run_on = "laptop"
+write_path = "protected"
+
+[agent.project_chat.permissions]
+read_graph = true
+read_research_md = true
+read_introduction = true
+read_repositories = "run_scope"
+read_conversations = "run_scope"
+write_graph_patch = true
+write_project_files = false
+write_paper = false
+
+[agent.paper_coach]
+provider = "codex"
+model = "gpt-5.6-luna"
+reasoning = "medium"
+run_on = "laptop"
+write_path = "protected"
+
+[agent.paper_coach.permissions]
+read_graph = true
+read_research_md = true
+read_introduction = true
+read_repositories = "project_scope"
+read_conversations = "none"
+write_graph_patch = false
+write_project_files = false
+write_paper = false
+
+[sources]
+claude_roots = [".sessions/claude"]
+codex_roots = [".sessions/codex"]

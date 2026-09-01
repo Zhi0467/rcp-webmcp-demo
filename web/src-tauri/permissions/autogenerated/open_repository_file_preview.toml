@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-open-repository-file-preview"
+description = "Enables the open_repository_file_preview command without any pre-configured scope."
+commands.allow = ["open_repository_file_preview"]
+
+[[permission]]
+identifier = "deny-open-repository-file-preview"
+description = "Denies the open_repository_file_preview command without any pre-configured scope."
+commands.deny = ["open_repository_file_preview"]

@@ -1,0 +1,14 @@
+{
+  "endpoint_kl": {
+    "plain_definition": "Policy divergence measured only at the final checkpoint.",
+    "term": "endpoint_kl",
+    "updated_rev": 1,
+    "where_defined": "configs/metrics.yaml:endpoint_kl"
+  },
+  "two-update": {
+    "plain_definition": "A controlled sequence that measures learning on a second unseen task after an initial adaptation.",
+    "term": "two-update",
+    "updated_rev": 1,
+    "where_defined": "experiments/two_update.py"
+  }
+}

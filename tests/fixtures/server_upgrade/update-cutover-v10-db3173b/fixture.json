@@ -1,0 +1,32 @@
+{
+  "active_operation_id": "b3cdc568-5937-4cc3-8971-c0e9f4f9d84c",
+  "boundary": "update-cutover-v10-db3173b",
+  "created_with_commit": "db3173b4ba31c89cd5370463bb180c007e013368",
+  "expected_repair": null,
+  "expected_revision": 1,
+  "experiment_episode_id": "8d3a0017-4ddb-40d2-8eaa-36ba2d59d084",
+  "experiment_operation_id": "45ae2b31-71c9-4b32-9dca-fb3bac2fb295",
+  "files": {
+    "data/rcp.sqlite3.gz": "db9e87d1d7ef56b0f8f4fa56161fd72d3f0c136ef6005280278155fbb0bc1a8c",
+    "project/.research/coverage.json": "0a2aa01fcd75ac1c888792cf8b80f166b715253ac1643fa9cb50993369ef81a3",
+    "project/.research/cursors.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "project/.research/glossary.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "project/.research/graph.json": "db630154ffe2aeb438d1b5a585e2712bf992ad40edec0e934846b22007595496",
+    "project/.research/manifest.toml": "62f859b330e6b40bf5ee9f1e452a0519ff2750d39d97c358d7ce16db28cefd5b",
+    "project/.research/patches/000001.json": "a20ead47c158047f1c916363ea6d1ec81772151ed4778c7f7785161149b91437",
+    "project/.research/proposals.json": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "project/.research/research.md": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "project/.research/scope-base.json": "0c19495c5a23742881ee23daeec8a3aaee130f1006971539f3818aa135149390"
+  },
+  "legacy_provisioning_request_id": "4a594b86-e1c0-4f9d-903f-612d74d9c038",
+  "member_session_hash": "865607e6083771750a3e8c11895fddb9be1dd0ded614b9e80af83ac861628eaf",
+  "member_token_hash": "15bffb4ccf912e7857e9290a28737e3d58a69421a39404ea773c7998e6dd378c",
+  "member_token_id": "11979785-5eb7-40d5-bb58-e198d3e95f56",
+  "project_id": "9c0441cf-5f19-47ae-8300-ff64a480932c",
+  "provisioning_configuration_complete": true,
+  "provisioning_project_id": "a0c74aeb-ae5e-4725-85ee-aa0f08dc031e",
+  "provisioning_request_id": "b62ea947-c261-4953-a6db-de229debf0b5",
+  "schema_version": 1,
+  "space_id": "1b7a2dcb-7160-45ff-9011-3dd2f275b7f0",
+  "user_id": "7e453a94-5eb0-4056-94fd-9752fcb28101"
+}

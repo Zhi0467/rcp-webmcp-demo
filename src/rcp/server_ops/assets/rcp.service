@@ -1,0 +1,27 @@
+[Unit]
+Description=Research Control Panel team server
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/rcp/server.toml
+ConditionPathExists=/etc/rcp/current
+
+[Service]
+Type=simple
+User=rcp
+Group=rcp
+WorkingDirectory=/etc/rcp/current
+Environment=RCP_DATA_DIR=/home/rcp/rcp-server/data
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/local/bin/rcp serve --host 127.0.0.1 --port 8421 --web-assets prebuilt
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=60
+KillSignal=SIGTERM
+UMask=0077
+RuntimeDirectory=rcp
+RuntimeDirectoryMode=0700
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

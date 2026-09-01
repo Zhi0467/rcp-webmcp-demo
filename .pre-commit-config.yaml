@@ -1,0 +1,43 @@
+# Hooks run the repo's own pinned tools: ruff comes from uv.lock, prettier from
+# web/package-lock.json. Run `uv sync` and `npm --prefix web install` first.
+#
+#   uv run pre-commit install        # enable the hook
+#   uv run pre-commit run --all-files
+
+# `.research/` holds append-only patch files and materialized outputs (invariants
+# 1 and 2 in AGENTS.md). No hook may rewrite them, not even for whitespace.
+exclude: '(^|/)\.research/|^\.recovery/|^web/dist/'
+
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --fix --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: prettier
+        name: prettier
+        entry: npm --prefix web exec -- prettier --write --ignore-unknown
+        language: system
+        files: ^web/(src|tests)/.*\.(ts|tsx|mjs|css)$|^web/[^/]*\.(json|html)$
+        require_serial: true
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files

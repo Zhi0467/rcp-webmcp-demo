@@ -1,0 +1,82 @@
+{
+  "prop/weaken-search-restores-learning": {
+    "base_rev": 3,
+    "card": {
+      "consequences": "The project would treat the current run as evidence about a combined training intervention, not replanning alone.",
+      "decision_needed": "Decide whether to weaken the hypothesis before the matched-path run finishes.",
+      "situation_cold": "The accepted hypothesis says replanning restores future learning, but the current comparison does not yet match the learning path that produced the endpoint.",
+      "why_human_now": "Weakening an accepted scientific claim changes the instruction sent to every control-panel agent."
+    },
+    "created_by": "agent",
+    "created_by_operation_id": null,
+    "id": "prop/weaken-search-restores-learning",
+    "ops": [
+      {
+        "nodes": [
+          {
+            "changes": {
+              "statement": "Search-assisted training may preserve later learning, but the mechanism remains unidentified until update histories are matched.",
+              "status": "weakened"
+            },
+            "id": "hyp/search-restores-future-learning"
+          }
+        ],
+        "op": "update_nodes"
+      }
+    ],
+    "raised_rev": 4,
+    "rejection_reason": null,
+    "related_config_keys": [],
+    "related_node_ids": [
+      "hyp/search-restores-future-learning"
+    ],
+    "resolution_reason": null,
+    "resolved_by": "agent",
+    "resolved_by_operation_id": null,
+    "resolved_rev": 5,
+    "status": "withdrawn",
+    "title": "Narrow what the search result would establish"
+  },
+  "prop/weaken-search-with-cause": {
+    "base_rev": 4,
+    "card": {
+      "consequences": "The project would treat the current run as evidence about a combined training intervention, not replanning alone.",
+      "decision_needed": "Decide whether to weaken the hypothesis before the matched-path run finishes.",
+      "situation_cold": "The accepted hypothesis says replanning restores future learning, while the current comparison does not match the learning path that produced the endpoint.",
+      "why_human_now": "Weakening an accepted scientific claim changes the instruction sent to every control-panel agent."
+    },
+    "created_by": "agent",
+    "created_by_operation_id": null,
+    "id": "prop/weaken-search-with-cause",
+    "ops": [
+      {
+        "nodes": [
+          {
+            "cause": {
+              "kind": "proposal_resolution",
+              "ref_id": "prop/weaken-search-with-cause"
+            },
+            "changes": {
+              "statement": "Search-assisted training may preserve later learning, but the mechanism remains unidentified until update histories are matched.",
+              "status": "weakened"
+            },
+            "id": "hyp/search-restores-future-learning"
+          }
+        ],
+        "op": "update_nodes"
+      }
+    ],
+    "raised_rev": 5,
+    "rejection_reason": null,
+    "related_config_keys": [],
+    "related_node_ids": [
+      "hyp/search-restores-future-learning"
+    ],
+    "resolution_reason": null,
+    "resolved_by": "human",
+    "resolved_by_operation_id": null,
+    "resolved_rev": 6,
+    "status": "approved",
+    "title": "Narrow what the search result would establish"
+  }
+}

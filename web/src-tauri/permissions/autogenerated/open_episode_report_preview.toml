@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-open-episode-report-preview"
+description = "Enables the open_episode_report_preview command without any pre-configured scope."
+commands.allow = ["open_episode_report_preview"]
+
+[[permission]]
+identifier = "deny-open-episode-report-preview"
+description = "Denies the open_episode_report_preview command without any pre-configured scope."
+commands.deny = ["open_episode_report_preview"]

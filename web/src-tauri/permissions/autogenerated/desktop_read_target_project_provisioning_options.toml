@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-read-target-project-provisioning-options"
+description = "Enables the desktop_read_target_project_provisioning_options command without any pre-configured scope."
+commands.allow = ["desktop_read_target_project_provisioning_options"]
+
+[[permission]]
+identifier = "deny-desktop-read-target-project-provisioning-options"
+description = "Denies the desktop_read_target_project_provisioning_options command without any pre-configured scope."
+commands.deny = ["desktop_read_target_project_provisioning_options"]

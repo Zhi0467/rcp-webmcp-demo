@@ -1,0 +1,7 @@
+web/dist/
+web/node_modules/
+web/package-lock.json
+web/*.tsbuildinfo
+web/src-tauri/gen/
+web/src-tauri/generated/
+web/src-tauri/target/

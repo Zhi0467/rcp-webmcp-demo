@@ -1,0 +1,18 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "RCP Local HTTPS Origin Probe",
+  "version": "0.0.0",
+  "identifier": "app.researchcontrolpanel.rcp.https-origin-probe",
+  "build": {
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [],
+    "security": {
+      "capabilities": []
+    }
+  },
+  "bundle": {
+    "active": false
+  }
+}

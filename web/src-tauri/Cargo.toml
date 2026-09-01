@@ -1,0 +1,66 @@
+[package]
+name = "rcp-desktop"
+version = "0.3.2"
+description = "Desktop entrance for Research Control Panel"
+authors = ["RCP contributors"]
+edition = "2021"
+
+[lib]
+name = "rcp_desktop_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "rcp-desktop"
+path = "src/main.rs"
+
+[features]
+# Retains the standalone Q11 probe target. The app-scoped TLS trust hook itself
+# is now part of every macOS desktop build.
+https-trust-probe = []
+
+[[example]]
+name = "local_https_origin_probe"
+# Keeps an ordinary `cargo test` from trying to build the GUI-only probe.
+required-features = ["https-trust-probe"]
+
+[build-dependencies]
+cc = "1"
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+rcgen = { version = "0.14", default-features = false, features = ["ring"] }
+libc = "0.2"
+plist = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+ring = "0.17"
+rustls = { version = "0.23", default-features = false, features = ["ring", "std"] }
+semver = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+socket2 = "0.6"
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-shell = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-updater = "2"
+tokio = { version = "1", features = ["io-util", "macros", "net", "process", "sync", "time"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12"] }
+tempfile = "3"
+url = "2"
+uuid = { version = "1", features = ["serde", "v4"] }
+zeroize = "1"
+
+[profile.dev]
+# `tauri build --debug` keeps debug_assertions, which RCP.app needs to launch
+# the backend from the checkout. The debug symbols are separable, and dropping
+# them keeps target/debug from growing several GB per dev bundle.
+debug = 0
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

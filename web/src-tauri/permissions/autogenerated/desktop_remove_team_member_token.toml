@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-remove-team-member-token"
+description = "Enables the desktop_remove_team_member_token command without any pre-configured scope."
+commands.allow = ["desktop_remove_team_member_token"]
+
+[[permission]]
+identifier = "deny-desktop-remove-team-member-token"
+description = "Denies the desktop_remove_team_member_token command without any pre-configured scope."
+commands.deny = ["desktop_remove_team_member_token"]

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-enroll-team-connection"
+description = "Enables the desktop_enroll_team_connection command without any pre-configured scope."
+commands.allow = ["desktop_enroll_team_connection"]
+
+[[permission]]
+identifier = "deny-desktop-enroll-team-connection"
+description = "Denies the desktop_enroll_team_connection command without any pre-configured scope."
+commands.deny = ["desktop_enroll_team_connection"]

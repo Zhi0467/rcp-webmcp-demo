@@ -1,0 +1,13 @@
+{
+  "revision": 3,
+  "kind": "approval",
+  "author": "human",
+  "created_at": "2026-07-25T10:24:00Z",
+  "summary": "Accepted the current search hypothesis.",
+  "run_truth_scope": [],
+  "repositories_read": [],
+  "processed_cursors": {},
+  "change_summary": ["The active hypothesis now enters research.md."],
+  "ops": [{"op": "set_standing", "node_id": "hyp/search-restores-future-learning", "standing": "accepted"}]
+}
+

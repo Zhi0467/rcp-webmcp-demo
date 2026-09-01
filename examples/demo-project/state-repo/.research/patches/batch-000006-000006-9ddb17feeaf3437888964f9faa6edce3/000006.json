@@ -1,0 +1,48 @@
+{
+  "revision": 6,
+  "kind": "approval",
+  "author": "human",
+  "created_at": "2026-07-30T10:13:22.529781Z",
+  "summary": "Approved proposal prop/weaken-search-with-cause.",
+  "ops": [
+    {
+      "op": "update_nodes",
+      "nodes": [
+        {
+          "id": "hyp/search-restores-future-learning",
+          "changes": {
+            "status": "weakened",
+            "statement": "Search-assisted training may preserve later learning, but the mechanism remains unidentified until update histories are matched."
+          },
+          "cause": {
+            "kind": "proposal_resolution",
+            "ref_id": "prop/weaken-search-with-cause"
+          }
+        }
+      ]
+    },
+    {
+      "op": "resolve_proposals",
+      "resolutions": [
+        {
+          "id": "prop/weaken-search-with-cause",
+          "status": "approved",
+          "reason": null
+        }
+      ]
+    },
+    {
+      "op": "set_standing",
+      "node_id": "hyp/search-restores-future-learning",
+      "standing": "accepted"
+    }
+  ],
+  "run_truth_scope": [],
+  "repositories_read": [],
+  "processed_cursors": {},
+  "change_summary": [
+    "Proposal prop/weaken-search-with-cause was approved."
+  ],
+  "admission": "accepted",
+  "admission_messages": []
+}

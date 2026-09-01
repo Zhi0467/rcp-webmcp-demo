@@ -1,0 +1,109 @@
+{
+  "revision": 5,
+  "kind": "refresh",
+  "author": "agent",
+  "created_at": "2026-07-30T08:00:00Z",
+  "summary": "Grounded the next belief review and exposed one provisional relation mismatch.",
+  "run_truth_scope": ["crlp-demo-state"],
+  "repositories_read": ["crlp-demo-state"],
+  "processed_cursors": {},
+  "change_summary": [
+    "Replaced the legacy belief proposal with a cause-bearing review.",
+    "Added external evidence and retained one deliberately mistyped relation as a visible flag."
+  ],
+  "admission": "accepted",
+  "admission_messages": [
+    {
+      "level": "flag",
+      "code": "relation-type-mismatch",
+      "message": "Edge 'ev/external-path-match-study::supports::blk/missing-optimizer-state' uses 'supports' from evidence to blocker; allowed source types are [evidence] and target types are [hypothesis].",
+      "patch_revision": 5,
+      "related_node_ids": [
+        "ev/external-path-match-study",
+        "blk/missing-optimizer-state"
+      ],
+      "related_edge_ids": [
+        "ev/external-path-match-study::supports::blk/missing-optimizer-state"
+      ]
+    }
+  ],
+  "ops": [
+    {
+      "op": "resolve_proposals",
+      "resolutions": [
+        {
+          "id": "prop/weaken-search-restores-learning",
+          "status": "withdrawn"
+        }
+      ]
+    },
+    {
+      "op": "create_nodes",
+      "nodes": [
+        {
+          "id": "ev/external-path-match-study",
+          "type": "evidence",
+          "title": "External path-matching study",
+          "observation": "A published matched-path comparison found that endpoint agreement did not imply the same later learning curve.",
+          "interpretation": "Endpoint matching alone is not enough to attribute future plasticity to replanning.",
+          "strength": "supporting",
+          "validity": "qualified",
+          "origin": "external_publication",
+          "artifact_refs": [
+            "papers/matched-path-comparison"
+          ]
+        }
+      ]
+    },
+    {
+      "op": "create_edges",
+      "edges": [
+        {
+          "source": "ev/external-path-match-study",
+          "target": "blk/missing-optimizer-state",
+          "relation": "supports",
+          "explanation": "This deliberately provisional edge demonstrates a visible endpoint-type flag."
+        }
+      ]
+    },
+    {
+      "op": "create_proposals",
+      "proposals": [
+        {
+          "id": "prop/weaken-search-with-cause",
+          "title": "Narrow what the search result would establish",
+          "card": {
+            "situation_cold": "The accepted hypothesis says replanning restores future learning, while the current comparison does not match the learning path that produced the endpoint.",
+            "why_human_now": "Weakening an accepted scientific claim changes the instruction sent to every control-panel agent.",
+            "consequences": "The project would treat the current run as evidence about a combined training intervention, not replanning alone.",
+            "decision_needed": "Decide whether to weaken the hypothesis before the matched-path run finishes."
+          },
+          "ops": [
+            {
+              "op": "update_nodes",
+              "nodes": [
+                {
+                  "id": "hyp/search-restores-future-learning",
+                  "changes": {
+                    "status": "weakened",
+                    "statement": "Search-assisted training may preserve later learning, but the mechanism remains unidentified until update histories are matched."
+                  },
+                  "cause": {
+                    "kind": "proposal_resolution",
+                    "ref_id": "prop/weaken-search-with-cause"
+                  }
+                }
+              ]
+            }
+          ],
+          "related_node_ids": [
+            "hyp/search-restores-future-learning"
+          ],
+          "related_config_keys": [],
+          "base_rev": 4,
+          "status": "pending"
+        }
+      ]
+    }
+  ]
+}

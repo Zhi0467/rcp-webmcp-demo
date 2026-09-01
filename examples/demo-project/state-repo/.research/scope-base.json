@@ -1,0 +1,10 @@
+{
+  "repository_aliases": [
+    "crlp-demo-secondary",
+    "crlp-demo-state"
+  ],
+  "truth_scope": [
+    "crlp-demo-state",
+    "crlp-demo-secondary"
+  ]
+}

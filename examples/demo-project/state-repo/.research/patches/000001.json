@@ -1,0 +1,115 @@
+{
+  "revision": 1,
+  "kind": "seed",
+  "author": "agent",
+  "created_at": "2026-07-25T10:00:00Z",
+  "summary": "Seeded the current plasticity question, experiment lineage, and unresolved design choice.",
+  "run_truth_scope": ["crlp-demo-state"],
+  "repositories_read": ["crlp-demo-state"],
+  "processed_cursors": {},
+  "change_summary": ["Recovered one research question, one hypothesis, one decision, and the current run lineage."],
+  "ops": [
+    {
+      "op": "create_nodes",
+      "nodes": [
+        {
+          "id": "rq/plasticity-under-shift",
+          "type": "research_question",
+          "title": "Plasticity after the task changes",
+          "question": "Does search-time replanning restore the learning ability a value network loses after the task changes, or only postpone its decay?",
+          "motivation": "Persistent learners must keep adapting after repeated distribution shifts.",
+          "scope": "Matched update histories, compute, and unseen post-shift learning curves.",
+          "status": "open"
+        },
+        {
+          "id": "hyp/search-restores-future-learning",
+          "type": "hypothesis",
+          "title": "Search restores future learning",
+          "statement": "Search-time replanning preserves features that make later value updates effective.",
+          "rationale": "Planning can reduce pressure to encode transient policy shortcuts in the value network.",
+          "predictions": ["Post-shift learning recovers faster", "The advantage survives matched endpoint performance"],
+          "status": "active"
+        },
+        {
+          "id": "dec/match-endpoint-or-training-path",
+          "type": "decision",
+          "title": "Choose the causal matching target",
+          "question": "Should the first controlled study match endpoint performance or the full training path?",
+          "options": ["Match endpoint performance", "Match the full update trajectory"],
+          "selected_option": null,
+          "rationale": null,
+          "consequences": ["Determines whether retention and future plasticity can be separated"],
+          "status": "open"
+        },
+        {
+          "id": "exp/two-update-matched-trajectory",
+          "type": "experiment",
+          "title": "Two-update matched trajectory",
+          "objective": "Measure future learning after matching the first update's compute and endpoint behavior.",
+          "design": "Train value-only and search-assisted arms through one shift, then measure learning on an unseen second shift.",
+          "expected_outcomes": ["Search changes the second-shift learning curve", "Endpoint-only gains disappear under path matching"],
+          "interpretation_rules": ["Current performance is not future plasticity", "A single checkpoint is not a learning curve"],
+          "completion_criteria": ["Three seeds per arm", "Matched first-shift endpoint KL"],
+          "status": "running",
+          "current_summary": "The repaired smoke is running; the first two attempts exposed unrelated data and checkpoint failures.",
+          "next_action": "Inspect the first complete second-shift learning curve.",
+          "attempts": [
+            {"id": "attempt/01", "sequence": 1, "purpose": "Configuration smoke", "configuration": "8 episodes", "status": "failed", "job_refs": ["9134421"], "outcome": null, "failure_reason": "Dataset path resolved to a stale mount"},
+            {"id": "attempt/02", "sequence": 2, "purpose": "Checkpoint resume smoke", "configuration": "32 episodes", "status": "failed", "job_refs": ["9135198"], "outcome": null, "failure_reason": "Optimizer state was absent"},
+            {"id": "attempt/03", "sequence": 3, "purpose": "Repaired causal smoke", "configuration": "128 episodes", "status": "running", "job_refs": ["9136024"], "outcome": null, "failure_reason": null}
+          ]
+        },
+        {
+          "id": "ev/endpoint-match-is-insufficient",
+          "type": "evidence",
+          "title": "Endpoint matching leaves different learning paths",
+          "observation": "Two arms reached similar endpoint return while their update-wise KL and gradient norms diverged.",
+          "interpretation": "Endpoint equality alone does not isolate the mechanism responsible for later learning.",
+          "strength": "preliminary",
+          "validity": "valid",
+          "artifact_refs": ["runs/two-update-smoke/metrics.json"]
+        },
+        {
+          "id": "blk/missing-optimizer-state",
+          "type": "blocker",
+          "title": "Resume omitted optimizer state",
+          "description": "The second smoke could not preserve the intended update history after resume.",
+          "blocker_type": "implementation",
+          "status": "resolved",
+          "resolution_condition": "Checkpoint and reload optimizer plus scheduler state.",
+          "recommended_action": "Keep the repaired resume assertion in the smoke test."
+        }
+      ]
+    },
+    {
+      "op": "create_edges",
+      "edges": [
+        {"source": "rq/plasticity-under-shift", "target": "hyp/search-restores-future-learning", "relation": "has_hypothesis"},
+        {"source": "rq/plasticity-under-shift", "target": "dec/match-endpoint-or-training-path", "relation": "has_decision"},
+        {"source": "exp/two-update-matched-trajectory", "target": "hyp/search-restores-future-learning", "relation": "tests"},
+        {"source": "exp/two-update-matched-trajectory", "target": "dec/match-endpoint-or-training-path", "relation": "governed_by"},
+        {"source": "exp/two-update-matched-trajectory", "target": "ev/endpoint-match-is-insufficient", "relation": "produces"},
+        {"source": "ev/endpoint-match-is-insufficient", "target": "hyp/search-restores-future-learning", "relation": "inconclusive", "explanation": "The observation motivates tighter matching but does not yet test the causal prediction."}
+      ]
+    },
+    {
+      "op": "upsert_glossary",
+      "terms": [
+        {"term": "endpoint_kl", "plain_definition": "Policy divergence measured only at the final checkpoint.", "where_defined": "configs/metrics.yaml:endpoint_kl"},
+        {"term": "two-update", "plain_definition": "A controlled sequence that measures learning on a second unseen task after an initial adaptation.", "where_defined": "experiments/two_update.py"}
+      ]
+    },
+    {
+      "op": "set_coverage",
+      "coverage": {
+        "repositories_seen": ["crlp-demo-state"],
+        "repositories_never_seen": ["crlp-demo-secondary"],
+        "sessions_read": [],
+        "sessions_skipped": ["crlp-demo-state/laptop/claude/abandoned-curriculum-thread"],
+        "earliest_timestamp": "2026-07-04T00:00:00Z",
+        "note": "The demo seed begins on July 4 and deliberately skips one superseded curriculum thread."
+      }
+    }
+  ]
+}
+

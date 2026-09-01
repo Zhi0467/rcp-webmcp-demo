@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-export-project-transfer"
+description = "Enables the desktop_export_project_transfer command without any pre-configured scope."
+commands.allow = ["desktop_export_project_transfer"]
+
+[[permission]]
+identifier = "deny-desktop-export-project-transfer"
+description = "Denies the desktop_export_project_transfer command without any pre-configured scope."
+commands.deny = ["desktop_export_project_transfer"]

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" rx="220" fill="#651f2a"/>
+  <path d="M180 150h664c31 0 56 25 56 56v612c0 31-25 56-56 56H180c-31 0-56-25-56-56V206c0-31 25-56 56-56Z" fill="#f2e7d4"/>
+  <path d="M208 198h608v628H208c-20 0-36-16-36-36V234c0-20 16-36 36-36Z" fill="none" stroke="#8f7059" stroke-width="18"/>
+  <path d="M764 198v628" stroke="#651f2a" stroke-width="18" opacity=".8"/>
+  <text x="480" y="590" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="250" font-weight="700" letter-spacing="-20" fill="#651f2a">RCP</text>
+</svg>

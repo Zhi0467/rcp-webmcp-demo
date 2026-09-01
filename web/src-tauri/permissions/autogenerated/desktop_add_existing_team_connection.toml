@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-add-existing-team-connection"
+description = "Enables the desktop_add_existing_team_connection command without any pre-configured scope."
+commands.allow = ["desktop_add_existing_team_connection"]
+
+[[permission]]
+identifier = "deny-desktop-add-existing-team-connection"
+description = "Denies the desktop_add_existing_team_connection command without any pre-configured scope."
+commands.deny = ["desktop_add_existing_team_connection"]

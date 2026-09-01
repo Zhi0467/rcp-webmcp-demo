@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-show-ready"
+description = "Enables the desktop_show_ready command without any pre-configured scope."
+commands.allow = ["desktop_show_ready"]
+
+[[permission]]
+identifier = "deny-desktop-show-ready"
+description = "Denies the desktop_show_ready command without any pre-configured scope."
+commands.deny = ["desktop_show_ready"]

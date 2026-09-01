@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-desktop-establish-team-session"
+description = "Enables the desktop_establish_team_session command without any pre-configured scope."
+commands.allow = ["desktop_establish_team_session"]
+
+[[permission]]
+identifier = "deny-desktop-establish-team-session"
+description = "Denies the desktop_establish_team_session command without any pre-configured scope."
+commands.deny = ["desktop_establish_team_session"]

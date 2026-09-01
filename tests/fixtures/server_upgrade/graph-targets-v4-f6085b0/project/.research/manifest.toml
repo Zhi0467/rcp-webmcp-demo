@@ -1,0 +1,31 @@
+name = "Upgrade Fixture Project"
+
+[[machines]]
+alias = "laptop"
+host = ""
+
+[[repositories]]
+alias = "repo"
+machine = "laptop"
+path = "."
+
+[project]
+truth_scope = ["repo"]
+
+[state]
+repository = "repo"
+
+[agent]
+default_run_truth_scope = ["repo"]
+
+[sources]
+claude_roots = ["provider-sources/claude"]
+codex_roots = ["provider-sources/codex"]
+
+[execution]
+run_on = "laptop"
+
+[paper.coach]
+default_provider = "codex"
+default_model = ""
+default_reasoning = "medium"
