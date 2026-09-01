@@ -9,7 +9,6 @@ services:
     buildCommand: npm --prefix web ci && npm --prefix web run build && uv sync --frozen --no-dev
     startCommand: uv run --frozen --no-dev python -m challenge.gateway --trust-forwarded-for
     healthCheckPath: /__rcp_demo/health
-    maxShutdownDelaySeconds: 60
     numInstances: 1
     envVars:
       - key: PYTHON_VERSION
