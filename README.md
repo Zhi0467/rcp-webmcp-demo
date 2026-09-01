@@ -135,7 +135,7 @@ Sol or Terra.
 The hosted HTTPS build and complete private challenge branch have passed:
 
 - 3,208 backend tests with nine expected skips;
-- 507 Web tests;
+- 508 Web tests;
 - the production TypeScript build;
 - Ruff and all repository pre-commit hooks;
 - an actual Codex in-app-browser journey through project discovery, exact node
