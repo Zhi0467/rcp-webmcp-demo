@@ -168,9 +168,9 @@ uv run ruff check src tests challenge
 
 `render.yaml` defines one Render Web Service with a persistent disk, HTTPS
 gateway health check, frozen production dependency install, and explicit
-resource limits. Create a Blueprint from this public repository. The deployment
-uses the `codex/webmcp-challenge` branch so the submitted build remains isolated
-from unrelated product work.
+resource limits. Create a Blueprint from this public repository's sole `main`
+branch. This repository is only the audited deployment snapshot; product
+development continues in the private RCP repository.
 
 ## Challenge scope and provenance
 

@@ -4,7 +4,7 @@ services:
     runtime: python
     region: virginia
     plan: 1c-2g
-    branch: codex/webmcp-challenge
+    branch: main
     autoDeployTrigger: commit
     buildCommand: npm --prefix web ci && npm --prefix web run build && uv sync --frozen --no-dev
     startCommand: uv run --frozen --no-dev python -m challenge.gateway --trust-forwarded-for
