@@ -5,7 +5,7 @@ episodes, evidence, and human decisions into one durable research workspace.
 This challenge build adds WebMCP Site Tools so a researcher can operate that
 workspace from the familiar ChatGPT or Codex conversation beside the live page.
 
-**Live demo:** deployment in progress
+**Live demo:** <https://rcp-webmcp-demo.onrender.com>
 
 This repository is a source-only public snapshot prepared for the
 [WebMCP Challenge](https://webmcp.devpost.com/). The `pre-webmcp` tag captures
@@ -132,14 +132,19 @@ Sol or Terra.
 
 ## Verification
 
-The complete private challenge branch has passed:
+The hosted HTTPS build and complete private challenge branch have passed:
 
 - 3,208 backend tests with nine expected skips;
 - 507 Web tests;
 - the production TypeScript build;
 - Ruff and all repository pre-commit hooks;
-- an actual Codex in-app-browser journey through project discovery, Experiment
-  Start and completion, and visual artifact opening; and
+- an actual Codex in-app-browser journey through project discovery, exact node
+  and conversation reads, a durable Discuss turn, Experiment Start and
+  completion, and both visual artifact and episode-report opening;
+- production `Secure`, `HttpOnly`, `SameSite=Strict` cookie checks, distinct
+  browser session copies, refresh and tab-reopen continuity, and persistence
+  through a Render service restart;
+- clean hosted browser and Render application logs; and
 - local production-gateway checks for cookie resume, restart persistence,
   two-browser isolation, route refusal, and bounded concurrent children.
 
